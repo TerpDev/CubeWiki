@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\Tenants\Schemas;
+namespace App\Filament\Admin\Resources\Tenants\Schemas;
 
-use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
 
 class TenantsForm
 {

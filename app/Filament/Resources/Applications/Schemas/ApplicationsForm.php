@@ -24,13 +24,13 @@ class ApplicationsForm
                     ->label('Slug')
                     ->disabled()
                     ->helperText('Slug is generated from the name.'),
-
-                Select::make('tenant_id')
-                    ->label('Tenant')
-                    ->relationship('tenant', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
+//
+//                Select::make('tenant_id')
+//                    ->label('Tenant')
+//                    ->relationship('tenant', 'name')
+//                    ->searchable()
+//                    ->preload()
+//                    ->required(),
             ]);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+// App\Models\Application.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,8 @@ class Application extends Model
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    // specify the foreign key explicitly to avoid Eloquent inferring 'tenants_id'
-    public function tenant(): BelongsTo { return $this->belongsTo(Tenants::class, 'tenant_id', 'id'); }
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenants::class, 'tenant_id', 'id');
+    }
 }

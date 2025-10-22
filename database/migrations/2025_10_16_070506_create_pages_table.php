@@ -7,21 +7,23 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('Pages', function (Blueprint $table) {
+        Schema::create('pages', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
 
             $table->string('title');
-            $table->string('slug')->unique();
+            $table->string('slug');
             $table->longText('content')->nullable();
             $table->timestamps();
+
+            $table->unique(['tenant_id', 'slug']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('Pages');
+        Schema::dropIfExists('pages');
     }
 };

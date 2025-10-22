@@ -1,52 +1,29 @@
 <?php
 
+// App\Models\User.php
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany};
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Collection;
+
+// Filament contracts:
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasDefaultTenant;
+use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 
-
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser, HasTenants, HasDefaultTenant
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'tenant_id',
-        'name',
-        'email',
-        'password',
-    ];
+    protected $fillable = ['name','email','password'];
+    protected $hidden = ['password','two_factor_secret','two_factor_recovery_codes','remember_token'];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'two_factor_secret',
-        'two_factor_recovery_codes',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -55,40 +32,38 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Get the user's initials
-     */
     public function initials(): string
     {
-        return Str::of($this->name)
-            ->explode(' ')
-            ->take(2)
-            ->map(fn ($word) => Str::substr($word, 0, 1))
-            ->implode('');
+        return Str::of($this->name)->explode(' ')->take(2)->map(fn($w) => Str::substr($w,0,1))->implode('');
     }
 
-    // Define the many-to-many relationship between users and tenants using the tenant_users pivot table
     public function tenants(): BelongsToMany
     {
         return $this->belongsToMany(Tenants::class, 'tenant_users', 'user_id', 'tenant_id')->withTimestamps();
     }
 
-    // Check whether this user is attached to the given tenant
-    public function canAccessTenant(Tenants $tenant): bool
+    // FilamentUser (optional gate for panels)
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true; // add your own auth/role logic if you want
+    }
+
+    // HasTenants
+    public function canAccessTenant(\Illuminate\Database\Eloquent\Model $tenant): bool
     {
         return $this->tenants()->where('tenants.id', $tenant->id)->exists();
     }
 
-    // Return the collection of tenants for this user. Panel param is optional for Filament compatibility.
-    public function getTenants(?Panel $panel = null): Collection
+    public function getTenants(Panel $panel): array|Collection
     {
         return $this->tenants()->get();
     }
 
-    // Return a default tenant (first attached) — Panel param is optional.
-    public function getDefaultTenant(?Panel $panel = null): ?Tenants
+    // HasDefaultTenant
+    public function getDefaultTenant(Panel $panel): ?\Illuminate\Database\Eloquent\Model
     {
         return $this->tenants()->first();
     }
 
 }
+

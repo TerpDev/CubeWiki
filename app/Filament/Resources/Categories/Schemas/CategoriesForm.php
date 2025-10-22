@@ -25,12 +25,12 @@ class CategoriesForm
                     ->label('Slug')
                     ->disabled()
                     ->helperText('Slug is automatically created.'),
-                Select::make('tenant_id')
-                    ->label('Tenant')
-                    ->relationship('tenant', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
+//                Select::make('tenant_id')
+//                    ->label('Tenant')
+//                    ->relationship('tenant', 'name')
+//                    ->searchable()
+//                    ->preload()
+//                    ->required(),
             ]);
     }
 }

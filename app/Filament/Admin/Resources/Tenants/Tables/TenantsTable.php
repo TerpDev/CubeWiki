@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\Tenants\Tables;
+namespace App\Filament\Admin\Resources\Tenants\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 
 class TenantsTable
 {

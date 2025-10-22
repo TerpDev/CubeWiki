@@ -22,7 +22,13 @@ class Category extends Model
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    // specify foreign key explicitly to avoid Eloquent inferring 'tenants_id'
-    public function tenant(): BelongsTo { return $this->belongsTo(Tenants::class, 'tenant_id', 'id'); }
-    public function pages(): HasMany { return $this->hasMany(Page::class); }
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenants::class, 'tenant_id', 'id');
+    }
+
+    public function pages(): HasMany
+    {
+        return $this->hasMany(Page::class);
+    }
 }

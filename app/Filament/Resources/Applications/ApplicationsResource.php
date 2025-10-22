@@ -7,7 +7,7 @@ use App\Filament\Resources\Applications\Pages\EditApplications;
 use App\Filament\Resources\Applications\Pages\ListApplications;
 use App\Filament\Resources\Applications\Schemas\ApplicationsForm;
 use App\Filament\Resources\Applications\Tables\ApplicationsTable;
-use App\Models\Application as ApplicationModel;
+use App\Models\Application;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -17,8 +17,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ApplicationsResource extends Resource
 {
+    protected static ?string $tenantOwnershipRelationshipName = 'tenant'; // 👈 add this
+
     protected static ?int $navigationSort = 1;
-    protected static ?string $model = ApplicationModel::class;
+    protected static ?string $model = Application::class;
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();

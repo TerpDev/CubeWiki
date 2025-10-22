@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\Tenants;
+namespace App\Filament\Admin\Resources\Tenants;
 
-use App\Filament\Resources\Tenants\Pages\CreateTenants;
-use App\Filament\Resources\Tenants\Pages\EditTenants;
-use App\Filament\Resources\Tenants\Pages\ListTenants;
-use App\Filament\Resources\Tenants\Schemas\TenantsForm;
-use App\Filament\Resources\Tenants\Tables\TenantsTable;
+use App\Filament\Admin\Resources\Tenants\Pages\CreateTenants;
+use App\Filament\Admin\Resources\Tenants\Pages\EditTenants;
+use App\Filament\Admin\Resources\Tenants\Pages\ListTenants;
+use App\Filament\Admin\Resources\Tenants\Schemas\TenantsForm;
+use App\Filament\Admin\Resources\Tenants\Tables\TenantsTable;
 use App\Models\Tenants;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -18,6 +18,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class TenantsResource extends Resource
 {
+// This resource represents the tenant model itself,
+// so it must not be scoped to a tenant.
+    protected static bool $isScopedToTenant = false;
+    protected static ?string $tenantOwnershipRelationshipName = null;
     protected static ?string $model = Tenants::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
