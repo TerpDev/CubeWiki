@@ -46,7 +46,6 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
 
             ->maxContentWidth(Width::Full)
-            ->renderHook('panels::body.end', fn () => view('filament.fullwidth'))
 
             ->middleware([
                 EncryptCookies::class,

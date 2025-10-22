@@ -19,13 +19,14 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-// your pages from the tutorial (see step 4 below)
 use App\Filament\Member\Pages\RegisterTenant;
 use App\Filament\Member\Pages\EditTenantProfile;
 use Filament\Navigation\MenuItem;
+use Filament\Facades\Filament;
 
 class MemberPanelProvider extends PanelProvider
 {
+
     public function panel(Panel $panel): Panel
     {
         return $panel
