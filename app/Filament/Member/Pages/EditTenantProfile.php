@@ -9,7 +9,7 @@ class EditTenantProfile extends BaseEditTenantProfile
 {
     public static function getLabel(): string
     {
-        return 'Edit your company';
+        return 'Edit your tenant profile';
     }
 
     public function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema

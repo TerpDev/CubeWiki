@@ -34,8 +34,8 @@ class MemberPanelProvider extends PanelProvider
             ->path('member')
             ->registration()
             ->login()
-            ->colors(['primary' => Color::Amber])
-            ->pages([Dashboard::class])
+            ->colors(['primary' => Color::Indigo])
+//            ->pages([Dashboard::class])
             ->tenant(Tenants::class, ownershipRelationship: 'tenant')
 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
@@ -44,12 +44,10 @@ class MemberPanelProvider extends PanelProvider
             ->maxContentWidth(Width::Full)
 
             // 💡 Member glue:
-            ->tenant(Tenants::class) // your tenant model
             ->tenantRegistration(RegisterTenant::class)
             ->tenantProfile(EditTenantProfile::class)
             ->tenantMenuItems([
                 'register' => MenuItem::make()->label('New tenant'),
-                // 'profile' and 'switch' are added automatically, you can customize labels if you like
             ])
 
             ->middleware([

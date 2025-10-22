@@ -19,16 +19,11 @@ class ApplicationsResource extends Resource
 {
     protected static ?string $tenantOwnershipRelationshipName = 'tenant'; // 👈 add this
 
-    protected static ?int $navigationSort = 1;
     protected static ?string $model = Application::class;
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
-    protected static string|null|\UnitEnum $navigationGroup = 'CubeWiki';
-
-
-    // use a valid Heroicon enum constant provided by Filament
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Cube;
 
     protected static ?string $recordTitleAttribute = 'name';

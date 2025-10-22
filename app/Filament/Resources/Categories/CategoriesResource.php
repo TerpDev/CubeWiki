@@ -18,9 +18,6 @@ class CategoriesResource extends Resource
 {
     protected static ?string $tenantOwnershipRelationshipName = 'tenant'; // 👈 Add this
 
-    protected static ?int $navigationSort = 2;
-    protected static string|null|\UnitEnum $navigationGroup = 'CubeWiki';
-
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
