@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Filament\Resources\Applications;
+
+use App\Filament\Resources\Applications\Pages\CreateApplications;
+use App\Filament\Resources\Applications\Pages\EditApplications;
+use App\Filament\Resources\Applications\Pages\ListApplications;
+use App\Filament\Resources\Applications\Schemas\ApplicationsForm;
+use App\Filament\Resources\Applications\Tables\ApplicationsTable;
+use App\Models\Application as ApplicationModel;
+use BackedEnum;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+
+class ApplicationsResource extends Resource
+{
+    protected static ?int $navigationSort = 1;
+    protected static ?string $model = ApplicationModel::class;
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    protected static string|null|\UnitEnum $navigationGroup = 'CubeWiki';
+
+
+    // use a valid Heroicon enum constant provided by Filament
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Cube;
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    public static function form(Schema $schema): Schema
+    {
+        return ApplicationsForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return ApplicationsTable::configure($table);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListApplications::route('/'),
+            'create' => CreateApplications::route('/create'),
+            'edit' => EditApplications::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('tenant');
+    }
+}
