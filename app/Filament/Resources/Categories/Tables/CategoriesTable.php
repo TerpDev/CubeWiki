@@ -32,7 +32,7 @@ class CategoriesTable
                     ->placeholder('—'),
 
                 TextColumn::make('created_at')
-                    ->label('Created')
+                    ->label(__('Created'))
                     ->dateTime()
                     ->sortable(),
             ])

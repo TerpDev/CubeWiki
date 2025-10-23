@@ -30,6 +30,6 @@ class PageController extends Controller
             return response()->json(['message' => 'Not found'], 404);
         }
 
-        return response()->json(['data' => $page->load('category')]);
+        return response()->json(['data' => $page->load('category.application')]);
     }
 }

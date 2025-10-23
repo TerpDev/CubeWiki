@@ -6,5 +6,6 @@ return [
     App\Providers\Filament\AppPanelProvider::class,
     App\Providers\Filament\MemberPanelProvider::class,
     App\Providers\Filament\UserPanelProvider::class,
+    App\Providers\Filament\WikiPanelProvider::class,
     App\Providers\FortifyServiceProvider::class,
 ];

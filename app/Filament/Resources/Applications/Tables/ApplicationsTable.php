@@ -32,7 +32,7 @@ class ApplicationsTable
 //                    ->searchable(),
 
                 TextColumn::make('created_at')
-                    ->label('Created')
+                    ->label(__('Created'))
                     ->dateTime()
                     ->sortable(),
             ])
