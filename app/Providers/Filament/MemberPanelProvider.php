@@ -21,12 +21,9 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 use App\Filament\Member\Pages\RegisterTenant;
 use App\Filament\Member\Pages\EditTenantProfile;
-use Filament\Navigation\MenuItem;
-use Filament\Facades\Filament;
 
 class MemberPanelProvider extends PanelProvider
 {
-
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -44,13 +41,8 @@ class MemberPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->maxContentWidth(Width::Full)
 
-            // 💡 Member glue:
             ->tenantRegistration(RegisterTenant::class)
             ->tenantProfile(EditTenantProfile::class)
-
-            ->tenantMenuItems([
-                'register' => MenuItem::make()->label('New tenant'),
-            ])
 
             ->middleware([
                 EncryptCookies::class,
@@ -66,3 +58,4 @@ class MemberPanelProvider extends PanelProvider
             ->authMiddleware([Authenticate::class]);
     }
 }
+

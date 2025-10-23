@@ -15,7 +15,7 @@ class PageController extends Controller
         $query = $tenant->pages()->with('category');
 
         if ($q = $request->query('q')) {
-            $query->where('title', 'like', "%{$q}%");
+            $query->whereLike('title', $q);
         }
 
         $data = $query->orderBy('title')->get();

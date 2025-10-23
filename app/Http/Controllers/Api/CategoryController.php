@@ -15,7 +15,7 @@ class CategoryController extends Controller
         $query = $tenant->categories()->withCount('pages')->with('application');
 
         if ($q = $request->query('q')) {
-            $query->where('name', 'like', "%{$q}%");
+            $query->whereLike('name', $q);
         }
 
         $data = $query->orderBy('name')->get();
