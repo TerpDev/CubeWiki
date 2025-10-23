@@ -17,7 +17,7 @@ class ApplicationsTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Name')
+                    ->label(__('Name'))
                     ->searchable()
                     ->sortable(),
 
@@ -44,7 +44,6 @@ class ApplicationsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-                CreateAction::make()->visible(true),
             ]);
     }
 }

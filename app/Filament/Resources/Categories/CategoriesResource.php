@@ -18,12 +18,27 @@ class CategoriesResource extends Resource
 {
     protected static ?string $tenantOwnershipRelationshipName = 'tenant'; // 👈 Add this
 
+    protected static ?string $model = Category::class;
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Categories');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('Categories');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('Category');
+    }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
-
-    protected static ?string $model = Category::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

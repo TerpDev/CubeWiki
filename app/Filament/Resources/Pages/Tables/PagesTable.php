@@ -16,7 +16,7 @@ class PagesTable
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->label('Title')
+                    ->label(__('Title'))
                     ->searchable()
                     ->sortable(),
 

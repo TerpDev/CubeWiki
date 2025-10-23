@@ -9,13 +9,13 @@ class EditTenantProfile extends BaseEditTenantProfile
 {
     public static function getLabel(): string
     {
-        return 'Edit your tenant profile';
+        return __('Edit tenant profile');
     }
 
     public function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
         return $schema->schema([
-            TextInput::make('name')->label('Name')->required(),
+            TextInput::make('name')->label(__('Name'))->required(),
         ]);
     }
 }

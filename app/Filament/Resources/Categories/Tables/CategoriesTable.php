@@ -16,7 +16,7 @@ class CategoriesTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Name')
+                    ->label(__('Name'))
                     ->searchable()
                     ->sortable(),
 
@@ -26,7 +26,7 @@ class CategoriesTable
                     ->sortable(),
 
                 TextColumn::make('application.name')
-                    ->label('Application')
+                    ->label(__('Application'))
                     ->searchable()
                     ->sortable()
                     ->placeholder('—'),
