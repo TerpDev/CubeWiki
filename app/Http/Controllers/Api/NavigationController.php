@@ -10,9 +10,16 @@ class NavigationController extends Controller
 {
     public function index(Tenants $tenant, Request $request)
     {
-        $applications = $tenant->applications()
-            ->with(['categories' => function ($query) {
-                $query->select('id', 'tenant_id', 'application_id', 'name', 'slug')
+        $query = $tenant->applications();
+
+        // Optioneel: filter op application naam
+        if ($q = $request->query('q')) {
+            $query->whereLike('name', $q);
+        }
+
+        $applications = $query
+            ->with(['categories' => function ($categoryQuery) use ($request) {
+                $categoryQuery->select('id', 'tenant_id', 'application_id', 'name', 'slug')
                       ->with(['pages' => function ($pagesQuery) {
                           $pagesQuery->select('id', 'category_id', 'tenant_id', 'title', 'slug')
                                      ->orderBy('title');
