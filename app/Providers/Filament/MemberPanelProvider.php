@@ -47,6 +47,7 @@ class MemberPanelProvider extends PanelProvider
             // 💡 Member glue:
             ->tenantRegistration(RegisterTenant::class)
             ->tenantProfile(EditTenantProfile::class)
+
             ->tenantMenuItems([
                 'register' => MenuItem::make()->label('New tenant'),
             ])
