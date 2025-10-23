@@ -68,11 +68,6 @@ class PagesForm
                                         $set('tenant_id', $tenantId);
                                     }),
 
-                                Select::make('tenant_id')
-                                    ->label('Tenant')
-                                    ->relationship('tenant', 'name')
-                                    ->disabled()
-                                    ->helperText('Tenant is automatically set from the selected category.'),
                             ]),
                     ]),
             ]);

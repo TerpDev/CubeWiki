@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -26,5 +27,9 @@ class Application extends Model
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenants::class, 'tenant_id', 'id');
+    }
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
     }
 }

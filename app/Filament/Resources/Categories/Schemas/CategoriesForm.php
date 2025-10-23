@@ -12,6 +12,7 @@ class CategoriesForm
     {
         return $schema
             ->components([
+
                 TextInput::make('name')
                     ->label('Name')
                     ->required()
@@ -25,6 +26,15 @@ class CategoriesForm
                     ->label('Slug')
                     ->disabled()
                     ->helperText('Slug is automatically created.'),
+                Select::make('application_id')
+                    ->label('Application')
+                    ->relationship('application', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required()
+                    ->nullable()
+                    ->helperText('Select an application for this category (optional)'),
+
 //                Select::make('tenant_id')
 //                    ->label('Tenant')
 //                    ->relationship('tenant', 'name')

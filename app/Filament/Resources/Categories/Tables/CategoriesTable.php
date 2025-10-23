@@ -24,17 +24,17 @@ class CategoriesTable
                     ->label('Slug')
                     ->searchable()
                     ->sortable(),
-//
-//                TextColumn::make('tenant.name')
-//                    ->label('Tenant')
-//                    ->sortable()
-//                    ->searchable(),
+
+                TextColumn::make('application.name')
+                    ->label('Application')
+                    ->searchable()
+                    ->sortable()
+                    ->placeholder('—'),
 
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime()
                     ->sortable(),
-
             ])
             ->filters([
                 //

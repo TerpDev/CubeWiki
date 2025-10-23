@@ -36,7 +36,7 @@ class MemberPanelProvider extends PanelProvider
             ->registration()
             ->login()
             ->colors(['primary' => Color::Indigo])
-//            ->pages([Dashboard::class])
+            ->pages([Dashboard::class])
             ->tenant(Tenants::class, ownershipRelationship: 'tenant')
 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')

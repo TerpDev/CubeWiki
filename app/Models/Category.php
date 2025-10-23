@@ -11,7 +11,7 @@ class Category extends Model
 {
     use HasSlug;
 
-    protected $fillable = ['tenant_id','name','slug'];
+    protected $fillable = ['tenant_id', 'application_id', 'name', 'slug'];
 
     public function getSlugOptions(): SlugOptions
     {
@@ -27,8 +27,14 @@ class Category extends Model
         return $this->belongsTo(Tenants::class, 'tenant_id', 'id');
     }
 
+    public function application(): BelongsTo
+    {
+        return $this->belongsTo(Application::class, 'application_id', 'id');
+    }
+
     public function pages(): HasMany
     {
         return $this->hasMany(Page::class);
     }
+
 }
