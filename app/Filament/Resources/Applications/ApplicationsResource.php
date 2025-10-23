@@ -20,10 +20,27 @@ class ApplicationsResource extends Resource
     protected static ?string $tenantOwnershipRelationshipName = 'tenant'; // 👈 add this
 
     protected static ?string $model = Application::class;
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Applications');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('Applications');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('Application');
+    }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Cube;
 
     protected static ?string $recordTitleAttribute = 'name';

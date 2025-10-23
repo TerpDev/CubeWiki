@@ -14,7 +14,7 @@ class CategoriesForm
             ->components([
 
                 TextInput::make('name')
-                    ->label('Name')
+                    ->label(__('Name'))
                     ->required()
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set) {
@@ -25,15 +25,14 @@ class CategoriesForm
                 TextInput::make('slug')
                     ->label('Slug')
                     ->disabled()
-                    ->helperText('Slug is automatically created.'),
+                    ->helperText(__('Slug is automatically created.')),
                 Select::make('application_id')
-                    ->label('Application')
+                    ->label(__('Application'))
                     ->relationship('application', 'name')
                     ->searchable()
                     ->preload()
                     ->required()
-                    ->nullable()
-                    ->helperText('Select an application for this category (optional)'),
+                    ->helperText(__('Select an application for this category.')),
 
 //                Select::make('tenant_id')
 //                    ->label('Tenant')

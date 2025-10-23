@@ -13,7 +13,7 @@ class ApplicationsForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label('Name')
+                    ->label(__('Name'))
                     ->required()
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set) {
@@ -23,7 +23,7 @@ class ApplicationsForm
                 TextInput::make('slug')
                     ->label('Slug')
                     ->disabled()
-                    ->helperText('Slug is generated from the name.'),
+                    ->helperText(__('Slug is automatically created.')),
 //
 //                Select::make('tenant_id')
 //                    ->label('Tenant')

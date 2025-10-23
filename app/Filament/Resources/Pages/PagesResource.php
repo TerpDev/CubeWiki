@@ -19,10 +19,27 @@ class PagesResource extends Resource
     protected static ?string $tenantOwnershipRelationshipName = 'tenant';
 
     protected static ?string $model = Page::class;
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Pages');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('Pages');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('Page');
+    }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'Page';

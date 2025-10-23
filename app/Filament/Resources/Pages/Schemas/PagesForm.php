@@ -40,7 +40,7 @@ class PagesForm
                             ])
                             ->schema([
                                 TextInput::make('title')
-                                    ->label('Title')
+                                    ->label(__('Title'))
                                     ->required()
                                     ->reactive()
                                     ->afterStateUpdated(function ($state, callable $set) {
@@ -50,10 +50,10 @@ class PagesForm
                                 TextInput::make('slug')
                                     ->label('Slug')
                                     ->disabled()
-                                    ->helperText('Slug is automatically created.'),
+                                    ->helperText(__('Slug is automatically created.')),
 
                                 Select::make('category_id')
-                                    ->label('Category')
+                                    ->label(__('Category'))
                                     ->relationship('category', 'name')
                                     ->searchable()
                                     ->preload()
