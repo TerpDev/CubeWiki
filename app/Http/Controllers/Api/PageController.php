@@ -15,15 +15,14 @@ class PageController extends Controller
         $query = $tenant->pages()->with('category');
 
         if ($q = $request->query('q')) {
-            $query->whereLike('title', $q);
+            $query->whereLike('slug', $q);
         }
 
-        $data = $query->orderBy('title')->get();
+        $data = $query->orderBy('slug')->get();
 
         return response()->json(['data' => $data]);
     }
 
-    // Show a single page (tenant scoped)
     public function show(Tenants $tenant, Page $page)
     {
         if ($page->tenant_id !== $tenant->id) {

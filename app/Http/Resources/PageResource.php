@@ -20,7 +20,6 @@ class PageResource extends JsonResource
             'slug'       => $this->slug,
             'content'    => $this->content,
 
-            // Alleen aanwezig als je in controller ->with('category') hebt gedaan
             'category'   => $this->whenLoaded('category', fn () => [
                 'id'   => $this->category->id,
                 'name' => $this->category->name,

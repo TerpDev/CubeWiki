@@ -6,7 +6,7 @@ use App\Models\Tenants;
 use CraftForge\FilamentLanguageSwitcher\FilamentLanguageSwitcherPlugin;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Pages\Dashboard;
+use App\Filament\Pages\DashBoard;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
 use Filament\Http\Middleware\Authenticate;
@@ -34,7 +34,7 @@ class MemberPanelProvider extends PanelProvider
             ->registration()
             ->login()
             ->colors(['primary' => Color::Indigo])
-            ->pages([Dashboard::class])
+            ->pages([DashBoard::class])
             ->tenant(Tenants::class, ownershipRelationship: 'tenant')
 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
@@ -66,4 +66,3 @@ class MemberPanelProvider extends PanelProvider
             );
     }
 }
-

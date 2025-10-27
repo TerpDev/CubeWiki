@@ -15,10 +15,10 @@ class CategoryController extends Controller
         $query = $tenant->categories()->withCount('pages')->with('application');
 
         if ($q = $request->query('q')) {
-            $query->whereLike('name', $q);
+            $query->whereLike('slug', $q);
         }
 
-        $data = $query->orderBy('name')->get();
+        $data = $query->orderBy('slug')->get();
 
         return response()->json(['data' => $data]);
     }

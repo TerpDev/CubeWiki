@@ -14,61 +14,50 @@ class PagesForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(12)
             ->components([
+                RichEditor::make('content')
+                    ->label('Content')
+                    ->required()
+                    ->columnSpan([
+                        'default' => 12,
+                        'lg' => 9,
+                    ]),
 
-                Grid::make()
-                    ->columns([
-                        'default' => 1,
+                Grid::make(1)
+                    ->columnSpan([
+                        'default' => 12,
                         'lg' => 3,
                     ])
                     ->schema([
-                        // LEFT SIDE — big RichEditor
-                        RichEditor::make('content')
-                            ->label('Content')
+                        TextInput::make('title')
+                            ->label(__('Title'))
                             ->required()
-                            ->columnSpan([
-                                'default' => 1,
-                                'lg' => 2,
-                            ]),
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                $set('slug', \Illuminate\Support\Str::slug((string) $state));
+                            }),
 
-                        // RIGHT SIDE — small form fields
-                        Grid::make()
-                            ->columns(1)
-                            ->columnSpan([
-                                'default' => 1,
-                                'lg' => 1,
-                            ])
-                            ->schema([
-                                TextInput::make('title')
-                                    ->label(__('Title'))
-                                    ->required()
-                                    ->reactive()
-                                    ->afterStateUpdated(function ($state, callable $set) {
-                                        $set('slug', \Illuminate\Support\Str::slug((string) $state));
-                                    }),
+                        TextInput::make('slug')
+                            ->label('Slug')
+                            ->disabled()
+                            ->helperText(__('Slug is automatically created.')),
 
-                                TextInput::make('slug')
-                                    ->label('Slug')
-                                    ->disabled()
-                                    ->helperText(__('Slug is automatically created.')),
-
-                                Select::make('category_id')
-                                    ->label(__('Category'))
-                                    ->relationship('category', 'name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->required()
-                                    ->reactive()
-                                    ->afterStateUpdated(function ($state, callable $set) {
-                                        $tenantId = null;
-                                        if ($state) {
-                                            $category = Category::find($state);
-                                            $tenantId = $category?->tenant_id;
-                                        }
-                                        $set('tenant_id', $tenantId);
-                                    }),
-
-                            ]),
+                        Select::make('category_id')
+                            ->label(__('Category'))
+                            ->relationship('category', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                $tenantId = null;
+                                if ($state) {
+                                    $category = Category::find($state);
+                                    $tenantId = $category?->tenant_id;
+                                }
+                                $set('tenant_id', $tenantId);
+                            }),
                     ]),
             ]);
     }

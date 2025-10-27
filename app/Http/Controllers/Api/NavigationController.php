@@ -12,9 +12,8 @@ class NavigationController extends Controller
     {
         $query = $tenant->applications();
 
-        // Optioneel: filter op application naam
         if ($q = $request->query('q')) {
-            $query->whereLike('name', $q);
+            $query->whereLike('slug', $q);
         }
 
         $applications = $query

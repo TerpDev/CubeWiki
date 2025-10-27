@@ -18,10 +18,10 @@ class ApplicationController extends Controller
         $query = $tenant->applications()->withCount('categories');
 
         if ($q = $request->query('q')) {
-            $query->whereLike('name', $q);
+            $query->whereLike('slug', $q);
         }
 
-        $apps = $query->orderBy('name')->get();
+        $apps = $query->orderBy('slug')->get();
 
         return response()->json(['data' => $apps]);
     }
