@@ -2,21 +2,19 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\AuthenticateSession;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use App\Models\Tenants;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Navigation\NavigationItem;
+use Filament\Http\Middleware\Authenticate;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Models\Tenants;
 
 class WikiPanelProvider extends PanelProvider
 {
@@ -26,22 +24,14 @@ class WikiPanelProvider extends PanelProvider
             ->id('wiki')
             ->path('wiki')
             ->colors([
-                'primary' => Color::Indigo,
+                'primary' => Color::Blue,
             ])
-            ->viteTheme('resources/css/filament/wiki/theme.css')
-            //fullscreen
-                ->maxContentWidth("full")
-            ->tenant(Tenants::class)
-            ->login()
-            ->registration()
-            ->discoverResources(in: app_path('Filament/Wiki/Resources'), for: 'App\Filament\Wiki\Resources')
-            ->discoverPages(in: app_path('Filament/Wiki/Pages'), for: 'App\Filament\Wiki\Pages')
-            ->discoverWidgets(in: app_path('Filament/Wiki/Widgets'), for: 'App\Filament\Wiki\Widgets')
+            ->tenant(Tenants::class, ownershipRelationship: 'tenant')
+            ->discoverPages(in: app_path('Filament/Wiki/Pages'), for: 'App\\Filament\\Wiki\\Pages')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
-                AuthenticateSession::class,
                 ShareErrorsFromSession::class,
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,
@@ -50,8 +40,6 @@ class WikiPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ])
-            ->sidebarCollapsibleOnDesktop()
-            ->brandName('Cube Wiki');
+            ]);
     }
 }

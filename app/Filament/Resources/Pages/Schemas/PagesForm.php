@@ -14,26 +14,20 @@ class PagesForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->columns([
-                'default' => 1,
-                'lg' => 3,
-            ])
+            ->columns(12)
             ->components([
-                // LEFT SIDE — big RichEditor (takes 2/3 of the width)
                 RichEditor::make('content')
-                    ->label(__('Content'))
+                    ->label('Content')
                     ->required()
                     ->columnSpan([
-                        'default' => 1,
-                        'lg' => 2,
+                        'default' => 12,
+                        'lg' => 9,
                     ]),
 
-                // RIGHT SIDE — small form fields (takes 1/3 of the width)
-                Grid::make()
-                    ->columns(1)
+                Grid::make(1)
                     ->columnSpan([
-                        'default' => 1,
-                        'lg' => 1,
+                        'default' => 12,
+                        'lg' => 3,
                     ])
                     ->schema([
                         TextInput::make('title')
@@ -45,10 +39,9 @@ class PagesForm
                             }),
 
                         TextInput::make('slug')
-                            ->label(__('Slug'))
+                            ->label('Slug')
                             ->disabled()
                             ->helperText(__('Slug is automatically created.')),
-
 
                         Select::make('category_id')
                             ->label(__('Category'))

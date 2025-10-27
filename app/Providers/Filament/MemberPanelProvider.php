@@ -6,6 +6,7 @@ use App\Models\Tenants;
 use CraftForge\FilamentLanguageSwitcher\FilamentLanguageSwitcherPlugin;
 use Filament\Panel;
 use Filament\PanelProvider;
+use App\Filament\Pages\DashBoard;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
 use Filament\Http\Middleware\Authenticate;
@@ -33,18 +34,17 @@ class MemberPanelProvider extends PanelProvider
             ->registration()
             ->login()
             ->colors(['primary' => Color::Indigo])
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
-//            ->pages([Dashboard::class])
-            ->viteTheme('resources/css/filament/wiki/theme.css')
-
+            ->pages([DashBoard::class])
             ->tenant(Tenants::class, ownershipRelationship: 'tenant')
-            ->tenantRegistration(RegisterTenant::class)
-            ->tenantProfile(EditTenantProfile::class)
 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->maxContentWidth(Width::Full)
+
+            ->tenantRegistration(RegisterTenant::class)
+            ->tenantProfile(EditTenantProfile::class)
+
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

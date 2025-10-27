@@ -11,6 +11,7 @@ use App\Models\Page;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
