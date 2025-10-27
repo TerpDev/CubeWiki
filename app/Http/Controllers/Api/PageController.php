@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    // List pages for a tenant (simple: no pagination)
     public function index(Tenants $tenant, Request $request)
     {
         $query = $tenant->pages()->with('category');

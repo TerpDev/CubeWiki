@@ -10,9 +10,7 @@ use Illuminate\Validation\Rule;
 
 class ApplicationController extends Controller
 {
-    /**
-     * List applications for a tenant.
-     */
+
     public function index(Tenants $tenant, Request $request)
     {
         $query = $tenant->applications()->withCount('categories');

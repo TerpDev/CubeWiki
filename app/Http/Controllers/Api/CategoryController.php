@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    // List categories for a tenant
     public function index(Tenants $tenant, Request $request)
     {
         $query = $tenant->categories()->withCount('pages')->with('application');
@@ -23,7 +22,6 @@ class CategoryController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    // Show a single category (tenant scoped)
     public function show(Tenants $tenant, Category $category)
     {
         if ($category->tenant_id !== $tenant->id) {
