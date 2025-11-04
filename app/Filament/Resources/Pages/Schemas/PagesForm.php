@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Pages\Schemas;
 
 use App\Models\Category;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -16,7 +17,8 @@ class PagesForm
         return $schema
             ->columns(12)
             ->components([
-                RichEditor::make('content')
+                MarkdownEditor::make('content')
+
                     ->label('Content')
                     ->required()
                     ->columnSpan([

@@ -16,10 +16,11 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements FilamentUser, HasTenants, HasDefaultTenant
 {
-    use HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasApiTokens;
 
     protected $fillable = ['name','email','password'];
     protected $hidden = ['password','two_factor_secret','two_factor_recovery_codes','remember_token'];
@@ -42,13 +43,12 @@ class User extends Authenticatable implements FilamentUser, HasTenants, HasDefau
         return $this->belongsToMany(Tenants::class, 'tenant_users', 'user_id', 'tenant_id')->withTimestamps();
     }
 
-    // FilamentUser (optional gate for panels)
     public function canAccessPanel(Panel $panel): bool
     {
         return true; // add your own auth/role logic if you want
+        //
     }
 
-    // HasTenants
     public function canAccessTenant(\Illuminate\Database\Eloquent\Model $tenant): bool
     {
         return $this->tenants()->where('tenants.id', $tenant->id)->exists();
@@ -59,7 +59,6 @@ class User extends Authenticatable implements FilamentUser, HasTenants, HasDefau
         return $this->tenants()->get();
     }
 
-    // HasDefaultTenant
     public function getDefaultTenant(Panel $panel): ?\Illuminate\Database\Eloquent\Model
     {
         return $this->tenants()->first();

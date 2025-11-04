@@ -20,10 +20,15 @@ class DashBoard extends BaseDashboard
             'tenant' => $tenant,
             'name' => $user?->name,
             'applicationsCount' => $tenant?->applications()->count() ?? 0,
-            //application names for the tenant
-            'applicationNames' => $tenant?->applications()->pluck('name') ?? [],
             'categoriesCount' => $tenant?->categories()->count() ?? 0,
             'pagesCount' => Page::where('tenant_id', $tenant?->id)->count() ?? 0,
+        ];
+    }
+
+    public function getWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\ApiTokenDebugWidget::class,
         ];
     }
 }

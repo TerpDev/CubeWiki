@@ -31,7 +31,7 @@ class MemberPanelProvider extends PanelProvider
             ->default()
             ->id('member')
             ->path('member')
-            ->registration()
+//            ->registration()
             ->login()
             ->colors(['primary' => Color::Indigo])
             ->pages([DashBoard::class])
