@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\{BelongsToMany, HasMany};
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
+use Laravel\Sanctum\HasApiTokens;
 use App\Models\Category;
 use App\Models\Application;
 use App\Models\Page;
@@ -13,7 +14,7 @@ use App\Models\User;
 
 class Tenants extends Model
 {
-    use HasSlug;
+    use HasSlug, HasApiTokens;
 
     protected $table = 'tenants';
     protected $fillable = ['name','slug'];
@@ -41,4 +42,26 @@ class Tenants extends Model
     public function categories(): HasMany { return $this->hasMany(Category::class, 'tenant_id', 'id'); }
     public function applications(): HasMany { return $this->hasMany(Application::class, 'tenant_id', 'id'); }
     public function pages(): HasMany { return $this->hasMany(Page::class, 'tenant_id', 'id'); }
+
+    /**
+     * Create a token for this tenant with optional resource IDs
+     */
+    public function createTokenWithResources(
+        string $name,
+        ?int $applicationId = null,
+        ?int $categoryId = null,
+        ?int $pageId = null,
+        array $abilities = ['*']
+    ) {
+        $token = $this->createToken($name, $abilities);
+
+        // Update the personal access token with resource IDs
+        $token->accessToken->update([
+            'application_id' => $applicationId,
+            'category_id' => $categoryId,
+            'page_id' => $pageId,
+        ]);
+
+        return $token;
+    }
 }

@@ -35,7 +35,7 @@ class PagesResource extends Resource
     {
         return __('Page');
     }
-
+    protected static ?int $navigationSort = 3;
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();

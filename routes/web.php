@@ -1,14 +1,21 @@
 <?php
+
+use App\Models\Tenants;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\NavigationController;
+use Laravel\Sanctum\PersonalAccessToken;
 
 
 Route::view('/', 'welcome')->name('home');
 
-Route::prefix('api/tenants/{tenant}')->group(function () {
+// Public API endpoint - Token in URL
+Route::get('api/data/{token}', [NavigationController::class, 'byToken']);
+
+
+Route::prefix('api/tenants/{tenant}')->middleware(['auth:sanctum', 'tenant.token'])->group(function () {
     //navigation
     Route::get('navigation', [NavigationController::class, 'index']);
 

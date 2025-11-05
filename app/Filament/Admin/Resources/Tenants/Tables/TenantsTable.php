@@ -7,8 +7,14 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Notifications\Notification;
+use Filament\Forms\Components\Select;
+use App\Models\Application;
+use App\Models\Category;
+use App\Models\Page;
 
 class TenantsTable
 {
@@ -26,6 +32,13 @@ class TenantsTable
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('tokens_count')
+                    ->label('API Tokens')
+                    ->counts('tokens')
+                    ->badge()
+                    ->color('info')
+                    ->sortable(),
+
                 TextColumn::make('users_count')
                     ->label('Users')
                     ->counts('users')
@@ -33,28 +46,9 @@ class TenantsTable
 
                 TextColumn::make('applications_count')
                     ->label('Applications')
-                    ->html()
-                    ->formatStateUsing(function ($state, $record) {
-                        $apps = $record->relationLoaded('applications') ? $record->applications : $record->applications()->get();
-
-                        $count = $apps->count();
-
-                        if ($count === 0) {
-                            return '<span class="text-sm text-gray-500">0</span>';
-                        }
-
-                        $items = '';
-                        foreach ($apps as $app) {
-                            $items .= '<li class="px-2 py-1 text-sm">- ' . e($app->name) . '</li>';
-                        }
-
-                        $html = '<details class="bg-white rounded border p-1">'
-                            . '<summary class="text-sm font-medium cursor-pointer">' . e($count . ' applications') . '</summary>'
-                            . '<ul class="mt-2">' . $items . '</ul>'
-                            . '</details>';
-
-                        return $html;
-                    })
+                    ->counts('applications')
+                    ->badge()
+                    ->color('success')
                     ->sortable(),
 
                 TextColumn::make('created_at')
@@ -67,13 +61,31 @@ class TenantsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('create_token')
+                    ->label('Create Token')
+                    ->icon('heroicon-o-key')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Create API Token')
+                    ->modalDescription(fn ($record) => "Create a new API token for {$record->name}?")
+                    ->modalSubmitActionLabel('Create Token')
+                    ->action(function ($record) {
+                        // Create new token (allows multiple tokens per tenant)
+                        $token = $record->createToken('admin-created-token')->plainTextToken;
+
+                        Notification::make()
+                            ->title('Token Created')
+                            ->body("Token: {$token}")
+                            ->success()
+                            ->duration(null)
+                            ->send();
+                    }),
                 DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-                CreateAction::make()->visible(true),
 
             ]);
     }

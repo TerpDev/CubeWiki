@@ -11,13 +11,17 @@ class PageController extends Controller
 {
     public function index(Tenants $tenant, Request $request)
     {
-        $query = $tenant->pages()->with('category');
+        $query = $tenant->pages()->with('category.application');
 
         if ($q = $request->query('q')) {
             $query->whereLike('slug', $q);
         }
 
-        $data = $query->orderBy('slug')->get();
+        // Filter by category_id
+        if ($categoryId = $request->query('category_id')) {
+            $query->where('category_id', $categoryId);
+            $data = $query->orderBy('slug')->get();
+        }
 
         return response()->json(['data' => $data]);
     }

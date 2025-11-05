@@ -27,8 +27,6 @@ class DashBoard extends BaseDashboard
 
     public function getWidgets(): array
     {
-        return [
-            \App\Filament\Widgets\ApiTokenDebugWidget::class,
-        ];
+        return [];
     }
 }

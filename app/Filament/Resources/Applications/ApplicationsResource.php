@@ -20,7 +20,7 @@ class ApplicationsResource extends Resource
     protected static ?string $tenantOwnershipRelationshipName = 'tenant'; // 👈 add this
 
     protected static ?string $model = Application::class;
-
+    protected static ?int $navigationSort = 3;
     public static function getNavigationLabel(): string
     {
         return __('Applications');

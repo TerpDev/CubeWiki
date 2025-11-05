@@ -13,7 +13,6 @@ class CreateUser extends CreateRecord
 
     protected function afterCreate(): void
     {
-        // Automatically create an API token for the new user
         $user = $this->record;
 
         // Sync tenants if provided in the form state
@@ -22,15 +21,11 @@ class CreateUser extends CreateRecord
             $user->tenants()->sync($tenants);
         }
 
-        // Create API token after syncing tenants
-        $token = $user->createToken('admin-created-token')->plainTextToken;
-
-        // Show notification with the token
+        // Note: API tokens are now created per tenant, not per user
         Notification::make()
             ->title('User Created Successfully')
-            ->body("API Token (save this, it won't be shown again): {$token}")
+            ->body("User created. API tokens should be created per tenant.")
             ->success()
-            ->duration(null) // Don't auto-hide so admin can copy it
             ->send();
     }
 

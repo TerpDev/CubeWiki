@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Tenants;
 use App\Filament\Admin\Resources\Tenants\Pages\CreateTenants;
 use App\Filament\Admin\Resources\Tenants\Pages\EditTenants;
 use App\Filament\Admin\Resources\Tenants\Pages\ListTenants;
+use App\Filament\Admin\Resources\Tenants\Pages;
 use App\Filament\Admin\Resources\Tenants\Schemas\TenantsForm;
 use App\Filament\Admin\Resources\Tenants\Tables\TenantsTable;
 use App\Models\Tenants;
@@ -30,7 +31,6 @@ class TenantsResource extends Resource
     {
         return static::getModel()::count();
     }
-
     public static function form(Schema $schema): Schema
     {
         return TenantsForm::configure($schema);
@@ -48,6 +48,7 @@ class TenantsResource extends Resource
             'index' => ListTenants::route('/'),
             'create' => CreateTenants::route('/create'),
             'edit' => EditTenants::route('/{record}/edit'),
+            'test-api-token' => Pages\TestApiToken::route('/test-api-token'),
         ];
     }
 
