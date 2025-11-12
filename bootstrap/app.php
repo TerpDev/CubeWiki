@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'tenant.token' => \App\Http\Middleware\EnsureTenantTokenMatch::class,
         ]);
+
+        // Enable CORS for API endpoints
+        $middleware->api(append: [
+            \Illuminate\Http\Middleware\HandleCors::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

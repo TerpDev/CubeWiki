@@ -24,4 +24,9 @@ class DashBoard extends BaseDashboard
             'pagesCount' => Page::where('tenant_id', $tenant?->id)->count() ?? 0,
         ];
     }
+
+    public function getWidgets(): array
+    {
+        return [];
+    }
 }

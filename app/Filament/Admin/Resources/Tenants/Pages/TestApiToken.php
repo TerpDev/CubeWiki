@@ -16,6 +16,7 @@ class TestApiToken extends Page
 
     public ?string $token = '';
     public ?array $tenantData = null;
+    public ?int $selectedApplicationId = null;
 
     public function testToken(): void
     {
@@ -55,19 +56,41 @@ class TestApiToken extends Page
             }
 
             // Get all tenant data
+            $applicationsQuery = $tenant->applications();
+
+            // Filter by selected application if set
+            if ($this->selectedApplicationId) {
+                $applicationsQuery->where('id', $this->selectedApplicationId);
+            }
+
+            $applications = $applicationsQuery->get();
+
             $this->tenantData = [
                 'tenant' => [
                     'id' => $tenant->id,
                     'name' => $tenant->name,
                     'slug' => $tenant->slug,
                 ],
-                'applications' => $tenant->applications()->get()->toArray(),
-                'categories' => $tenant->categories()->get()->toArray(),
-                'pages' => $tenant->pages()->get()->toArray(),
+                'all_applications' => $tenant->applications()->get(['id', 'name'])->toArray(), // For dropdown
+                'applications' => $applications->toArray(),
+                'categories' => $this->selectedApplicationId
+                    ? $tenant->categories()->where('application_id', $this->selectedApplicationId)->get()->toArray()
+                    : $tenant->categories()->get()->toArray(),
+                'pages' => $this->selectedApplicationId
+                    ? $tenant->pages()->whereHas('category', function($q) {
+                        $q->where('application_id', $this->selectedApplicationId);
+                    })->get()->toArray()
+                    : $tenant->pages()->get()->toArray(),
                 'statistics' => [
-                    'total_applications' => $tenant->applications()->count(),
-                    'total_categories' => $tenant->categories()->count(),
-                    'total_pages' => $tenant->pages()->count(),
+                    'total_applications' => $this->selectedApplicationId ? 1 : $tenant->applications()->count(),
+                    'total_categories' => $this->selectedApplicationId
+                        ? $tenant->categories()->where('application_id', $this->selectedApplicationId)->count()
+                        : $tenant->categories()->count(),
+                    'total_pages' => $this->selectedApplicationId
+                        ? $tenant->pages()->whereHas('category', function($q) {
+                            $q->where('application_id', $this->selectedApplicationId);
+                        })->count()
+                        : $tenant->pages()->count(),
                 ],
             ];
 
@@ -83,6 +106,14 @@ class TestApiToken extends Page
                 ->title('Error')
                 ->body($e->getMessage())
                 ->send();
+        }
+    }
+
+    public function updatedSelectedApplicationId(): void
+    {
+        // Reload data when application selection changes
+        if ($this->token) {
+            $this->testToken();
         }
     }
 }

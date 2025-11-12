@@ -11,11 +11,12 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 Route::view('/', 'welcome')->name('home');
 
-// Public API endpoint - Token in URL
-Route::get('api/data/{token}', [NavigationController::class, 'byToken']);
+// Public API endpoint - Token in URL (for embedding)
+Route::get('api/data/{token}', [NavigationController::class, 'byToken'])
+    ->middleware(['throttle:60,1']); // Rate limit: 60 requests per minute
 
 
-Route::prefix('api/tenants/{tenant}')->middleware(['auth:sanctum', 'tenant.token'])->group(function () {
+Route::prefix('api/tenants/{tenant}')->middleware(['auth:sanctum'])->group(function () {
     //navigation
     Route::get('navigation', [NavigationController::class, 'index']);
 

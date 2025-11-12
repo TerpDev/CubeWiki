@@ -9,7 +9,7 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class NavigationController extends Controller
 {
-    public function byToken(string $token)
+    public function byToken(string $token, Request $request)
     {
         $tokenModel = PersonalAccessToken::findToken($token);
 
@@ -17,7 +17,10 @@ class NavigationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid token'
-            ], 401);
+            ], 401)
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         }
 
         $tenant = $tokenModel->tokenable;
@@ -26,11 +29,21 @@ class NavigationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Token not linked to a tenant'
-            ], 401);
+            ], 401)
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         }
 
         // Get navigation data with content
-        $applications = $tenant->applications()
+        $applicationsQuery = $tenant->applications();
+
+        // Filter by application_id if provided
+        if ($applicationId = $request->query('application_id')) {
+            $applicationsQuery->where('id', $applicationId);
+        }
+
+        $applications = $applicationsQuery
             ->with(['categories' => function ($categoryQuery) {
                 $categoryQuery->select('id', 'tenant_id', 'application_id', 'name', 'slug')
                     ->with(['pages' => function ($pagesQuery) {
@@ -43,13 +56,17 @@ class NavigationController extends Controller
             ->get(['id', 'tenant_id', 'name', 'slug']);
 
         return response()->json([
+            'success' => true,
             'tenant' => [
                 'id' => $tenant->id,
                 'name' => $tenant->name,
                 'slug' => $tenant->slug,
             ],
             'applications' => $applications,
-        ]);
+        ])
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     }
 
 
