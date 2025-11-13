@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PageResource;
 use App\Models\Tenants;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -13,32 +14,10 @@ class NavigationController extends Controller
     {
         $tokenModel = PersonalAccessToken::findToken($token);
 
-        if (!$tokenModel) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid token'
-            ], 401)
-            ->header('Access-Control-Allow-Origin', '*')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-        }
-
         $tenant = $tokenModel->tokenable;
 
-        if (!$tenant || !($tenant instanceof Tenants)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Token not linked to a tenant'
-            ], 401)
-            ->header('Access-Control-Allow-Origin', '*')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-        }
-
-        // Get navigation data with content
         $applicationsQuery = $tenant->applications();
 
-        // Filter by application_id if provided
         if ($applicationId = $request->query('application_id')) {
             $applicationsQuery->where('id', $applicationId);
         }
@@ -55,6 +34,23 @@ class NavigationController extends Controller
             ->orderBy('name')
             ->get(['id', 'tenant_id', 'name', 'slug']);
 
+        // Transform pages to include parsed markdown
+        $applications->each(function ($application) {
+            $application->categories->each(function ($category) {
+                $category->pages->transform(function ($page) {
+                    return [
+                        'id' => $page->id,
+                        'category_id' => $page->category_id,
+                        'tenant_id' => $page->tenant_id,
+                        'title' => $page->title,
+                        'slug' => $page->slug,
+//                        'content' => $page->content,
+                        'content_html' => str($page->content)->markdown()->sanitizeHtml()->toString(),
+                    ];
+                });
+            });
+        });
+
         return response()->json([
             'success' => true,
             'tenant' => [
@@ -63,10 +59,10 @@ class NavigationController extends Controller
                 'slug' => $tenant->slug,
             ],
             'applications' => $applications,
-        ])
-        ->header('Access-Control-Allow-Origin', '*')
-        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        ]);
+//        ->header('Access-Control-Allow-Origin', '*')
+//        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+//        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     }
 
 

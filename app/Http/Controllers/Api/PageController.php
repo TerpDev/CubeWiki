@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PageResource;
 use App\Models\Tenants;
 use App\Models\Page;
 use Illuminate\Http\Request;
@@ -20,10 +21,11 @@ class PageController extends Controller
         // Filter by category_id
         if ($categoryId = $request->query('category_id')) {
             $query->where('category_id', $categoryId);
-            $data = $query->orderBy('slug')->get();
         }
 
-        return response()->json(['data' => $data]);
+        $data = $query->orderBy('slug')->get();
+
+        return PageResource::collection($data);
     }
 
     public function show(Tenants $tenant, Page $page)
@@ -32,6 +34,6 @@ class PageController extends Controller
             return response()->json(['message' => 'Not found'], 404);
         }
 
-        return response()->json(['data' => $page->load('category.application')]);
+        return new PageResource($page->load('category.application'));
     }
 }

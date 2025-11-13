@@ -15,10 +15,11 @@ class PageResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'         => $this->id,
-            'title'      => $this->title,
-            'slug'       => $this->slug,
-            'content'    => $this->content,
+            'id'           => $this->id,
+            'title'        => $this->title,
+            'slug'         => $this->slug,
+            'content'      => $this->content,
+            'content_html' => str($this->content)->markdown()->sanitizeHtml()->toString(),
 
             'category'   => $this->whenLoaded('category', fn () => [
                 'id'   => $this->category->id,
@@ -27,5 +28,6 @@ class PageResource extends JsonResource
             ]),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-        ];    }
+        ];
+    }
 }
