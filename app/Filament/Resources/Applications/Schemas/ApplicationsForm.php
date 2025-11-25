@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Applications\Schemas;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
 
 class ApplicationsForm
 {
@@ -16,7 +16,7 @@ class ApplicationsForm
                     ->label(__('Name'))
                     ->required()
                     ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set) {
+                    ->afterStateUpdated(function ($state, callable $set): void {
                         $set('slug', \Illuminate\Support\Str::slug((string) $state));
                     }),
 
@@ -24,14 +24,13 @@ class ApplicationsForm
                     ->label('Slug')
                     ->disabled()
                     ->helperText(__('Slug is automatically created.')),
-//
-//                Select::make('tenant_id')
-//                    ->label('Tenant')
-//                    ->relationship('tenant', 'name')
-//                    ->searchable()
-//                    ->preload()
-//                    ->required(),
+                //
+                //                Select::make('tenant_id')
+                //                    ->label('Tenant')
+                //                    ->relationship('tenant', 'name')
+                //                    ->searchable()
+                //                    ->preload()
+                //                    ->required(),
             ]);
     }
 }
-

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\PageResource;
 use App\Models\Tenants;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -23,9 +22,9 @@ class NavigationController extends Controller
         }
 
         $applications = $applicationsQuery
-            ->with(['categories' => function ($categoryQuery) {
+            ->with(['categories' => function ($categoryQuery): void {
                 $categoryQuery->select('id', 'tenant_id', 'application_id', 'name', 'slug')
-                    ->with(['pages' => function ($pagesQuery) {
+                    ->with(['pages' => function ($pagesQuery): void {
                         $pagesQuery->select('id', 'category_id', 'tenant_id', 'title', 'slug', 'content')
                             ->orderBy('title');
                     }])
@@ -35,8 +34,8 @@ class NavigationController extends Controller
             ->get(['id', 'tenant_id', 'name', 'slug']);
 
         // Transform pages to include parsed markdown
-        $applications->each(function ($application) {
-            $application->categories->each(function ($category) {
+        $applications->each(function ($application): void {
+            $application->categories->each(function ($category): void {
                 $category->pages->transform(function ($page) {
                     return [
                         'id' => $page->id,
@@ -44,7 +43,7 @@ class NavigationController extends Controller
                         'tenant_id' => $page->tenant_id,
                         'title' => $page->title,
                         'slug' => $page->slug,
-//                        'content' => $page->content,
+                        //                        'content' => $page->content,
                         'content_html' => str($page->content)->markdown()->sanitizeHtml()->toString(),
                     ];
                 });
@@ -60,11 +59,10 @@ class NavigationController extends Controller
             ],
             'applications' => $applications,
         ]);
-//        ->header('Access-Control-Allow-Origin', '*')
-//        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-//        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        //        ->header('Access-Control-Allow-Origin', '*')
+        //        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        //        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     }
-
 
     public function index(Tenants $tenant, Request $request)
     {
@@ -75,13 +73,13 @@ class NavigationController extends Controller
         }
 
         $applications = $query
-            ->with(['categories' => function ($categoryQuery) use ($request) {
+            ->with(['categories' => function ($categoryQuery): void {
                 $categoryQuery->select('id', 'tenant_id', 'application_id', 'name', 'slug')
-                      ->with(['pages' => function ($pagesQuery) {
-                          $pagesQuery->select('id', 'category_id', 'tenant_id', 'title', 'slug')
-                                     ->orderBy('title');
-                      }])
-                      ->orderBy('name');
+                    ->with(['pages' => function ($pagesQuery): void {
+                        $pagesQuery->select('id', 'category_id', 'tenant_id', 'title', 'slug')
+                            ->orderBy('title');
+                    }])
+                    ->orderBy('name');
             }])
             ->orderBy('name')
             ->get(['id', 'tenant_id', 'name', 'slug']);

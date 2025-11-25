@@ -3,10 +3,10 @@
 namespace App\Filament\Member\Pages;
 
 use App\Models\Tenants;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Checkbox;
-use Filament\Pages\Tenancy\RegisterTenant as BaseRegisterTenant;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Pages\Tenancy\RegisterTenant as BaseRegisterTenant;
 use Illuminate\Validation\ValidationException;
 
 class RegisterTenant extends BaseRegisterTenant
@@ -36,7 +36,7 @@ class RegisterTenant extends BaseRegisterTenant
         $existing = Tenants::where('name', $data['name'])->first();
 
         if ($existing) {
-            if (!empty($data['join_if_exists'])) {
+            if (! empty($data['join_if_exists'])) {
                 auth()->user()->tenants()->attach($existing->id);
 
                 // Create token for existing tenant
@@ -81,7 +81,7 @@ class RegisterTenant extends BaseRegisterTenant
     private function ensureTokenForTenantAndNotify(Tenants $tenant): void
     {
         // Create token for tenant if it doesn't have one
-        if (!$tenant->tokens()->exists()) {
+        if (! $tenant->tokens()->exists()) {
             $token = $tenant->createToken('default')->plainTextToken;
 
             Notification::make()
@@ -93,4 +93,3 @@ class RegisterTenant extends BaseRegisterTenant
         }
     }
 }
-

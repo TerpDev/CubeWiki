@@ -1,13 +1,10 @@
 <?php
 
-use App\Models\Tenants;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\ApplicationController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\NavigationController;
-use Laravel\Sanctum\PersonalAccessToken;
-
+use App\Http\Controllers\Api\PageController;
+use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 
@@ -15,9 +12,8 @@ Route::view('/', 'welcome')->name('home');
 Route::get('api/data/{token}', [NavigationController::class, 'byToken'])
     ->middleware(['throttle:60,1']); // Rate limit: 60 requests per minute
 
-
-Route::prefix('api/tenants/{tenant}')->middleware(['auth:sanctum'])->group(function () {
-    //navigation
+Route::prefix('api/tenants/{tenant}')->middleware(['auth:sanctum'])->group(function (): void {
+    // navigation
     Route::get('navigation', [NavigationController::class, 'index']);
 
     // Categories

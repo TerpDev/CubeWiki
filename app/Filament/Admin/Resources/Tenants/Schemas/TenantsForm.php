@@ -15,7 +15,7 @@ class TenantsForm
                     ->label('Name')
                     ->required()
                     ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set) {
+                    ->afterStateUpdated(function ($state, callable $set): void {
                         // auto-generate a slug client-side for immediate feedback
                         $set('slug', \Illuminate\Support\Str::slug((string) $state));
                     }),

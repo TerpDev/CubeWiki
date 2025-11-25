@@ -9,4 +9,3 @@ class CreateApplications extends CreateRecord
 {
     protected static string $resource = ApplicationsResource::class;
 }
-

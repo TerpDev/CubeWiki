@@ -14,12 +14,12 @@ class ApplicationResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-//        return parent::toArray($request);
-        return[
+        //        return parent::toArray($request);
+        return [
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'category_count'  => $this->whenCounted('categories'),
+            'category_count' => $this->whenCounted('categories'),
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

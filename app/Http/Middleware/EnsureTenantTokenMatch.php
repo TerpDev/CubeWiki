@@ -21,7 +21,7 @@ class EnsureTenantTokenMatch
             // The token's tokenable should be the tenant
             if (get_class($user) !== 'App\Models\Tenants' || $user->id !== $tenant->id) {
                 return response()->json([
-                    'message' => 'This API token does not have access to this tenant.'
+                    'message' => 'This API token does not have access to this tenant.',
                 ], 403);
             }
         }
@@ -29,4 +29,3 @@ class EnsureTenantTokenMatch
         return $next($request);
     }
 }
-

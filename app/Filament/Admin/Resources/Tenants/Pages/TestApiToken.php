@@ -3,19 +3,24 @@
 namespace App\Filament\Admin\Resources\Tenants\Pages;
 
 use App\Filament\Admin\Resources\Tenants\TenantsResource;
-use Filament\Resources\Pages\Page;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\Page;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class TestApiToken extends Page
 {
     protected static string $resource = TenantsResource::class;
+
     protected string $view = 'filament.admin.resources.tenants.pages.test-api-token';
+
     protected static ?string $navigationLabel = 'Test API Token';
+
     protected static ?string $title = 'Test API Token';
 
     public ?string $token = '';
+
     public ?array $tenantData = null;
+
     public ?int $selectedApplicationId = null;
 
     public function testToken(): void
@@ -27,6 +32,7 @@ class TestApiToken extends Page
                 ->title('Token vereist')
                 ->body('Vul een API token in.')
                 ->send();
+
             return;
         }
 
@@ -34,24 +40,26 @@ class TestApiToken extends Page
             // Find token in database
             $tokenModel = PersonalAccessToken::findToken($this->token);
 
-            if (!$tokenModel) {
+            if (! $tokenModel) {
                 Notification::make()
                     ->danger()
                     ->title('Token niet gevonden')
                     ->body('Deze token bestaat niet in de database.')
                     ->send();
+
                 return;
             }
 
             // Get the tenant from the token
             $tenant = $tokenModel->tokenable;
 
-            if (!$tenant || !($tenant instanceof \App\Models\Tenants)) {
+            if (! $tenant || ! ($tenant instanceof \App\Models\Tenants)) {
                 Notification::make()
                     ->danger()
                     ->title('Geen tenant gevonden')
                     ->body('Deze token is niet gekoppeld aan een tenant.')
                     ->send();
+
                 return;
             }
 
@@ -77,7 +85,7 @@ class TestApiToken extends Page
                     ? $tenant->categories()->where('application_id', $this->selectedApplicationId)->get()->toArray()
                     : $tenant->categories()->get()->toArray(),
                 'pages' => $this->selectedApplicationId
-                    ? $tenant->pages()->whereHas('category', function($q) {
+                    ? $tenant->pages()->whereHas('category', function ($q): void {
                         $q->where('application_id', $this->selectedApplicationId);
                     })->get()->toArray()
                     : $tenant->pages()->get()->toArray(),
@@ -87,7 +95,7 @@ class TestApiToken extends Page
                         ? $tenant->categories()->where('application_id', $this->selectedApplicationId)->count()
                         : $tenant->categories()->count(),
                     'total_pages' => $this->selectedApplicationId
-                        ? $tenant->pages()->whereHas('category', function($q) {
+                        ? $tenant->pages()->whereHas('category', function ($q): void {
                             $q->where('application_id', $this->selectedApplicationId);
                         })->count()
                         : $tenant->pages()->count(),
