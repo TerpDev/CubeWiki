@@ -2,26 +2,25 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Member\Pages\EditTenantProfile;
+use App\Filament\Member\Pages\RegisterTenant;
+use App\Filament\Pages\DashBoard;
 use App\Models\Tenants;
 use CraftForge\FilamentLanguageSwitcher\FilamentLanguageSwitcherPlugin;
-use Filament\Panel;
-use Filament\PanelProvider;
-use App\Filament\Pages\DashBoard;
-use Filament\Support\Colors\Color;
-use Filament\Support\Enums\Width;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Panel;
+use Filament\PanelProvider;
+use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Width;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-
-use App\Filament\Member\Pages\RegisterTenant;
-use App\Filament\Member\Pages\EditTenantProfile;
 
 class MemberPanelProvider extends PanelProvider
 {

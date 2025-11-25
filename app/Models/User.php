@@ -1,29 +1,29 @@
 <?php
 
 // App\Models\User.php
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Collection;
-
-// Filament contracts:
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
-use function Laravel\Prompts\alert;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+// Filament contracts:
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 
-class User extends Authenticatable implements FilamentUser, HasTenants, HasDefaultTenant
+class User extends Authenticatable implements FilamentUser, HasDefaultTenant, HasTenants
 {
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
-    protected $fillable = ['name','email','password'];
-    protected $hidden = ['password','two_factor_secret','two_factor_recovery_codes','remember_token'];
+    protected $fillable = ['name', 'email', 'password'];
+
+    protected $hidden = ['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'];
 
     protected function casts(): array
     {
@@ -35,7 +35,7 @@ class User extends Authenticatable implements FilamentUser, HasTenants, HasDefau
 
     public function initials(): string
     {
-        return Str::of($this->name)->explode(' ')->take(2)->map(fn($w) => Str::substr($w,0,1))->implode('');
+        return Str::of($this->name)->explode(' ')->take(2)->map(fn ($w) => Str::substr($w, 0, 1))->implode('');
     }
 
     public function tenants(): BelongsToMany
@@ -66,6 +66,4 @@ class User extends Authenticatable implements FilamentUser, HasTenants, HasDefau
     {
         return $this->tenants()->first();
     }
-
 }
-

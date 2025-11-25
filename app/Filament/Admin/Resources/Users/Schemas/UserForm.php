@@ -2,10 +2,8 @@
 
 namespace App\Filament\Admin\Resources\Users\Schemas;
 
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\MultiSelect;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class UserForm
@@ -40,13 +38,12 @@ class UserForm
                     ->helperText('Minimal length: 8 characters.')
                     ->columnSpan(1),
 
-
                 // Assign tenants to the user (many-to-many)
                 MultiSelect::make('tenants')
                     ->label('Tenants')
                     ->relationship('tenants', 'name')
                     ->preload()
-                    ->saveRelationshipsUsing(function ($component, $state) {
+                    ->saveRelationshipsUsing(function ($component, $state): void {
                         $component->getRecord()->tenants()->sync($state ?? []);
                     })
                     ->helperText('Select one or more tenants to attach to this user.')

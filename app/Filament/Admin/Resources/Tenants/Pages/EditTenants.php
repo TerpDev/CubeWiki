@@ -3,10 +3,10 @@
 namespace App\Filament\Admin\Resources\Tenants\Pages;
 
 use App\Filament\Admin\Resources\Tenants\TenantsResource;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\Action;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\EditRecord;
 
 class EditTenants extends EditRecord
 {
@@ -23,7 +23,7 @@ class EditTenants extends EditRecord
                 ->modalHeading('Create New API Token')
                 ->modalDescription('Create a new API token for this tenant. The token will have access to all applications, categories, and pages of this tenant.')
                 ->modalSubmitActionLabel('Create Token')
-                ->action(function () {
+                ->action(function (): void {
                     $tenant = $this->record;
 
                     // Create new token for entire tenant (no specific resource restrictions)

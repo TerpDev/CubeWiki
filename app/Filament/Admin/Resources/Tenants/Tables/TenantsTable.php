@@ -2,19 +2,14 @@
 
 namespace App\Filament\Admin\Resources\Tenants\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Notifications\Notification;
-use Filament\Forms\Components\Select;
-use App\Models\Application;
-use App\Models\Category;
-use App\Models\Page;
 
 class TenantsTable
 {
@@ -69,7 +64,7 @@ class TenantsTable
                     ->modalHeading('Create API Token')
                     ->modalDescription(fn ($record) => "Create a new API token for {$record->name}?")
                     ->modalSubmitActionLabel('Create Token')
-                    ->action(function ($record) {
+                    ->action(function ($record): void {
                         // Create new token (allows multiple tokens per tenant)
                         $token = $record->createToken('admin-created-token')->plainTextToken;
 

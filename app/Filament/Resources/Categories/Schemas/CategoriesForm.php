@@ -17,8 +17,7 @@ class CategoriesForm
                     ->label(__('Name'))
                     ->required()
                     ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set) {
-                        // auto-generate a slug client-side for immediate feedback
+                    ->afterStateUpdated(function ($state, callable $set): void {
                         $set('slug', \Illuminate\Support\Str::slug((string) $state));
                     }),
 
@@ -33,13 +32,6 @@ class CategoriesForm
                     ->preload()
                     ->required()
                     ->helperText(__('Select an application for this category.')),
-
-//                Select::make('tenant_id')
-//                    ->label('Tenant')
-//                    ->relationship('tenant', 'name')
-//                    ->searchable()
-//                    ->preload()
-//                    ->required(),
             ]);
     }
 }

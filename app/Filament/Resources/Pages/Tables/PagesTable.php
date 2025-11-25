@@ -41,7 +41,7 @@ class PagesTable
                         // Beperk tot 10 woorden
                         $words = explode(' ', $text);
                         if (count($words) > 10) {
-                            $text = implode(' ', array_slice($words, 0, 10)) . '...';
+                            $text = implode(' ', array_slice($words, 0, 10)).'...';
                         }
 
                         return $text;

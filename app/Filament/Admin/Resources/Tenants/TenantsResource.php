@@ -5,7 +5,6 @@ namespace App\Filament\Admin\Resources\Tenants;
 use App\Filament\Admin\Resources\Tenants\Pages\CreateTenants;
 use App\Filament\Admin\Resources\Tenants\Pages\EditTenants;
 use App\Filament\Admin\Resources\Tenants\Pages\ListTenants;
-use App\Filament\Admin\Resources\Tenants\Pages;
 use App\Filament\Admin\Resources\Tenants\Schemas\TenantsForm;
 use App\Filament\Admin\Resources\Tenants\Tables\TenantsTable;
 use App\Models\Tenants;
@@ -16,21 +15,25 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-
 class TenantsResource extends Resource
 {
-// This resource represents the tenant model itself,
-// so it must not be scoped to a tenant.
+    // This resource represents the tenant model itself,
+    // so it must not be scoped to a tenant.
     protected static bool $isScopedToTenant = false;
+
     protected static ?string $tenantOwnershipRelationshipName = null;
+
     protected static ?string $model = Tenants::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
     protected static ?string $recordTitleAttribute = 'name';
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
+
     public static function form(Schema $schema): Schema
     {
         return TenantsForm::configure($schema);
@@ -40,7 +43,6 @@ class TenantsResource extends Resource
     {
         return TenantsTable::configure($table);
     }
-
 
     public static function getPages(): array
     {

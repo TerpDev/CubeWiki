@@ -3,21 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\{BelongsToMany, HasMany};
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
-use Laravel\Sanctum\HasApiTokens;
-use App\Models\Category;
-use App\Models\Application;
-use App\Models\Page;
-use App\Models\User;
 
 class Tenants extends Model
 {
-    use HasSlug, HasApiTokens;
+    use HasApiTokens, HasSlug;
 
     protected $table = 'tenants';
-    protected $fillable = ['name','slug'];
+
+    protected $fillable = ['name', 'slug'];
 
     public function getSlugOptions(): SlugOptions
     {
@@ -39,9 +37,20 @@ class Tenants extends Model
         return $this->belongsToMany(User::class, 'tenant_users', 'tenant_id', 'user_id')->withTimestamps();
     }
 
-    public function categories(): HasMany { return $this->hasMany(Category::class, 'tenant_id', 'id'); }
-    public function applications(): HasMany { return $this->hasMany(Application::class, 'tenant_id', 'id'); }
-    public function pages(): HasMany { return $this->hasMany(Page::class, 'tenant_id', 'id'); }
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class, 'tenant_id', 'id');
+    }
+
+    public function applications(): HasMany
+    {
+        return $this->hasMany(Application::class, 'tenant_id', 'id');
+    }
+
+    public function pages(): HasMany
+    {
+        return $this->hasMany(Page::class, 'tenant_id', 'id');
+    }
 
     /**
      * Create a token for this tenant with optional resource IDs

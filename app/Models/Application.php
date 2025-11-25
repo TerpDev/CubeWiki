@@ -1,6 +1,7 @@
 <?php
 
 // App\Models\Application.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,7 @@ class Application extends Model
 {
     use HasSlug;
 
-    protected $fillable = ['tenant_id','name','slug'];
+    protected $fillable = ['tenant_id', 'name', 'slug'];
 
     public function getSlugOptions(): SlugOptions
     {
@@ -28,6 +29,7 @@ class Application extends Model
     {
         return $this->belongsTo(Tenants::class, 'tenant_id', 'id');
     }
+
     public function categories(): HasMany
     {
         return $this->hasMany(Category::class);

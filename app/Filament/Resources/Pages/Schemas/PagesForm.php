@@ -4,10 +4,9 @@ namespace App\Filament\Resources\Pages\Schemas;
 
 use App\Models\Category;
 use Filament\Forms\Components\MarkdownEditor;
-use Filament\Schemas\Components\Grid;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 
 class PagesForm
@@ -36,7 +35,7 @@ class PagesForm
                             ->label(__('Title'))
                             ->required()
                             ->reactive()
-                            ->afterStateUpdated(function ($state, callable $set) {
+                            ->afterStateUpdated(function ($state, callable $set): void {
                                 $set('slug', \Illuminate\Support\Str::slug((string) $state));
                             }),
 
@@ -52,7 +51,7 @@ class PagesForm
                             ->preload()
                             ->required()
                             ->reactive()
-                            ->afterStateUpdated(function ($state, callable $set) {
+                            ->afterStateUpdated(function ($state, callable $set): void {
                                 $tenantId = null;
                                 if ($state) {
                                     $category = Category::find($state);
