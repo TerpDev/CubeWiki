@@ -4,7 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Member\Pages\EditTenantProfile;
 use App\Filament\Member\Pages\RegisterTenant;
-use App\Filament\Pages\DashBoard;
+use App\Filament\Pages\Dashboard;
 use App\Models\Tenants;
 use CraftForge\FilamentLanguageSwitcher\FilamentLanguageSwitcherPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -33,7 +33,7 @@ class MemberPanelProvider extends PanelProvider
 //            ->registration()
             ->login()
             ->colors(['primary' => Color::Indigo])
-            ->pages([DashBoard::class])
+            ->pages([Dashboard::class])
             ->tenant(Tenants::class, ownershipRelationship: 'tenant')
 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')

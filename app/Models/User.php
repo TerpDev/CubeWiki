@@ -1,7 +1,5 @@
 <?php
 
-// App\Models\User.php
-
 namespace App\Models;
 
 use Filament\Models\Contracts\FilamentUser;
@@ -10,13 +8,18 @@ use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-// Filament contracts:
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ */
 class User extends Authenticatable implements FilamentUser, HasDefaultTenant, HasTenants
 {
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
@@ -25,13 +28,10 @@ class User extends Authenticatable implements FilamentUser, HasDefaultTenant, Ha
 
     protected $hidden = ['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'];
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
     public function initials(): string
     {
@@ -52,9 +52,17 @@ class User extends Authenticatable implements FilamentUser, HasDefaultTenant, Ha
         return true;
     }
 
-    public function canAccessTenant(\Illuminate\Database\Eloquent\Model $tenant): bool
+    /**
+     * Narrowed in phpdoc for static analysis to the Tenants model,
+     * but keep the runtime signature compatible with the HasTenants contract.
+     *
+     * @param Tenants|Model $tenant
+     */
+    public function canAccessTenant(Model $tenant): bool
     {
-        return $this->tenants()->where('tenants.id', $tenant->id)->exists();
+        /** @var Tenants $tenant */
+        // use getKey() to avoid relying on dynamic ->id on a generic Model
+        return $this->tenants()->where('tenants.id', $tenant->getKey())->exists();
     }
 
     public function getTenants(Panel $panel): array|Collection
@@ -62,8 +70,17 @@ class User extends Authenticatable implements FilamentUser, HasDefaultTenant, Ha
         return $this->tenants()->get();
     }
 
-    public function getDefaultTenant(Panel $panel): ?\Illuminate\Database\Eloquent\Model
+    /**
+     * Keep the return type compatible with HasDefaultTenant/HasTenants contract,
+     * but narrow the phpdoc return for static analyzers.
+     *
+     * @return Tenants|null
+     */
+    public function getDefaultTenant(Panel $panel): ?Model
     {
-        return $this->tenants()->first();
+        /** @var Tenants|null $tenant */
+        $tenant = $this->tenants()->first();
+
+        return $tenant;
     }
 }

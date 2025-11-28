@@ -13,6 +13,11 @@ class NavigationController extends Controller
     {
         $tokenModel = PersonalAccessToken::findToken($token);
 
+        if (! $tokenModel) {
+            return response()->json(['success' => false, 'message' => 'Invalid token.'], 404);
+        }
+
+        /** @var \App\Models\Tenants $tenant */
         $tenant = $tokenModel->tokenable;
 
         $applicationsQuery = $tenant->applications();
@@ -21,6 +26,7 @@ class NavigationController extends Controller
             $applicationsQuery->where('id', $applicationId);
         }
 
+        /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Application[] $applications */
         $applications = $applicationsQuery
             ->with(['categories' => function ($categoryQuery): void {
                 $categoryQuery->select('id', 'tenant_id', 'application_id', 'name', 'slug')
@@ -35,19 +41,30 @@ class NavigationController extends Controller
 
         // Transform pages to include parsed markdown
         $applications->each(function ($application): void {
-            $application->categories->each(function ($category): void {
-                $category->pages->transform(function ($page) {
+            /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Category[] $categories */
+            $categories = $application->getRelation('categories') ?? collect();
+
+            $categories->each(function ($category): void {
+                /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Page[] $pages */
+                $pages = $category->getRelation('pages') ?? collect();
+
+                $transformed = $pages->transform(function ($page) {
                     return [
                         'id' => $page->id,
                         'category_id' => $page->category_id,
                         'tenant_id' => $page->tenant_id,
                         'title' => $page->title,
                         'slug' => $page->slug,
-                        //                        'content' => $page->content,
                         'content_html' => str($page->content)->markdown()->sanitizeHtml()->toString(),
                     ];
                 });
+
+                // replace the relation on the category with the transformed collection/array
+                $category->setRelation('pages', $transformed);
             });
+
+            // ensure the application keeps the (possibly modified) categories relation
+            $application->setRelation('categories', $categories);
         });
 
         return response()->json([
@@ -59,9 +76,6 @@ class NavigationController extends Controller
             ],
             'applications' => $applications,
         ]);
-        //        ->header('Access-Control-Allow-Origin', '*')
-        //        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-        //        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     }
 
     public function index(Tenants $tenant, Request $request)

@@ -19,10 +19,13 @@ class EnsureTenantTokenMatch
         // If authenticated via Sanctum token, check if the token belongs to the tenant
         if ($user && $tenant) {
             // The token's tokenable should be the tenant
-            if (get_class($user) !== 'App\Models\Tenants' || $user->id !== $tenant->id) {
-                return response()->json([
-                    'message' => 'This API token does not have access to this tenant.',
-                ], 403);
+            // If user is actually a Tenants model (token authenticated tenant), ensure ids match
+            if ($user instanceof \App\Models\Tenants) {
+                if ($user->id !== $tenant->id) {
+                    return response()->json([
+                        'message' => 'This API token does not have access to this tenant.',
+                    ], 403);
+                }
             }
         }
 

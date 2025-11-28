@@ -13,6 +13,11 @@ class Tenants extends Model
 {
     use HasApiTokens, HasSlug;
 
+    /**
+     * @property int $id
+     * @property string $name
+     * @property string $slug
+     */
     protected $table = 'tenants';
 
     protected $fillable = ['name', 'slug'];
@@ -65,6 +70,7 @@ class Tenants extends Model
         $token = $this->createToken($name, $abilities);
 
         // Update the personal access token with resource IDs
+        // NewAccessToken->accessToken is provided by Laravel\Sanctum, update directly
         $token->accessToken->update([
             'application_id' => $applicationId,
             'category_id' => $categoryId,

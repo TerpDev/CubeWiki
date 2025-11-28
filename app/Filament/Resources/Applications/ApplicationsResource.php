@@ -40,7 +40,9 @@ class ApplicationsResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        $count = static::getModel()::count();
+
+        return (string) $count;
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Cube;
