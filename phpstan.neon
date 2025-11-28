@@ -15,4 +15,7 @@ parameters:
     - storage/*
     - bootstrap/cache/*
     - vendor/*
+    - app/Livewire/**
+    - tests/**
   ignoreErrors: []
+  treatPhpDocTypesAsCertain: false

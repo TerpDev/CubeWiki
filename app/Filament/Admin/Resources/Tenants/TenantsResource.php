@@ -31,7 +31,9 @@ class TenantsResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        $count = static::getModel()::count();
+
+        return (string) $count;
     }
 
     public static function form(Schema $schema): Schema

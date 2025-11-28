@@ -4,7 +4,19 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
+/**
+ * @mixin \App\Models\Page
+ * @property int $id
+ * @property string $title
+ * @property string $slug
+ * @property string|null $content
+ * @property \App\Models\Category|null $category
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \App\Models\Page $resource
+ */
 class PageResource extends JsonResource
 {
     /**

@@ -13,6 +13,7 @@ class CreateUser extends CreateRecord
 
     protected function afterCreate(): void
     {
+        /** @var \App\Models\User $user */
         $user = $this->record;
 
         // Sync tenants if provided in the form state

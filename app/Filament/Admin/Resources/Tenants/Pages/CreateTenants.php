@@ -12,6 +12,7 @@ class CreateTenants extends CreateRecord
 
     protected function afterCreate(): void
     {
+        /** @var \App\Models\Tenants $tenant */
         $tenant = $this->record;
 
         // Create API token for the new tenant

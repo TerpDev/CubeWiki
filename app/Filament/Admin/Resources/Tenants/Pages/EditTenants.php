@@ -24,6 +24,7 @@ class EditTenants extends EditRecord
                 ->modalDescription('Create a new API token for this tenant. The token will have access to all applications, categories, and pages of this tenant.')
                 ->modalSubmitActionLabel('Create Token')
                 ->action(function (): void {
+                    /** @var \App\Models\Tenants $tenant */
                     $tenant = $this->record;
 
                     // Create new token for entire tenant (no specific resource restrictions)
