@@ -1,5 +1,6 @@
 # Cube Wiki API – Multitenant Knowledge Management Platform
-
+Welcome to Cube Wiki, a multitenant knowledge-management platform built with Filament.
+Cube Wiki offers a structured way to manage documentation through Applications, Categories, and Pages.
 ## Showcase
 ### User
 ![User Dashboard](Docs/images/dashboarduser.png)
