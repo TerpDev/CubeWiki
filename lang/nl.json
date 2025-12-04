@@ -23,5 +23,6 @@
     "Tenant created and you have been added to: :name": "Tenant aangemaakt en je bent toegevoegd aan: :name",
     "Slug is generated from the name.": "Slug wordt automatisch gegenereerd van de naam.",
     "Slug is automatically created.": "Slug wordt automatisch aangemaakt.",
-    "Select an application for this category (optional)": "Selecteer een applicatie voor deze categorie (optioneel)"
+    "Select an application for this category (optional)": "Selecteer een applicatie voor deze categorie (optioneel)",
+    "As you can see here you can create applications, categories and pages. You are connected to your tenant!": "Zoals je hier kunt zien, kun je applicaties, categorieën en pagina's aanmaken. Je bent verbonden met je tenant!"
 }

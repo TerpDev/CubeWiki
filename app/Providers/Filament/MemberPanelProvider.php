@@ -33,7 +33,7 @@ class MemberPanelProvider extends PanelProvider
             ->path('member')
 //            ->registration()
             ->login()
-            ->colors(['primary' => Color::Indigo])
+            ->colors(['primary' => Color::Amber])
             ->pages([DashBoard::class])
             ->tenant(Tenants::class, ownershipRelationship: 'tenant')
 
