@@ -5,12 +5,8 @@ namespace App\Filament\Admin\Resources\Users\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\Action;
-use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
-use Filament\Notifications\Notification;
 
 class UsersTable
 {
@@ -36,7 +32,6 @@ class UsersTable
                     ->copyMessage('Email copied!')
                     ->icon('heroicon-m-envelope'),
 
-
                 TextColumn::make('tenants_count')
                     ->label('Tenants')
                     ->counts('tenants')
@@ -47,7 +42,7 @@ class UsersTable
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime('d M Y H:i')
-                    ->sortable()
+                    ->sortable(),
             ])
             ->filters([
                 //

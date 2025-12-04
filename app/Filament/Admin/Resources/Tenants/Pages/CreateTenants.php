@@ -3,8 +3,8 @@
 namespace App\Filament\Admin\Resources\Tenants\Pages;
 
 use App\Filament\Admin\Resources\Tenants\TenantsResource;
-use Filament\Resources\Pages\CreateRecord;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\CreateRecord;
 
 class CreateTenants extends CreateRecord
 {
@@ -12,6 +12,7 @@ class CreateTenants extends CreateRecord
 
     protected function afterCreate(): void
     {
+        /** @var \App\Models\Tenants $tenant */
         $tenant = $this->record;
 
         // Create API token for the new tenant

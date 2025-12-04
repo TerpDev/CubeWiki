@@ -20,7 +20,9 @@ class ApplicationsResource extends Resource
     protected static ?string $tenantOwnershipRelationshipName = 'tenant'; // 👈 add this
 
     protected static ?string $model = Application::class;
+
     protected static ?int $navigationSort = 3;
+
     public static function getNavigationLabel(): string
     {
         return __('Applications');
@@ -38,7 +40,9 @@ class ApplicationsResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        $count = static::getModel()::count();
+
+        return (string) $count;
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Cube;

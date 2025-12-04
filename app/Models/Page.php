@@ -14,7 +14,7 @@ class Page extends Model
     // ensure the table is lowercase plural
     protected $table = 'pages';
 
-    protected $fillable = ['tenant_id','category_id','title','slug','content'];
+    protected $fillable = ['tenant_id', 'category_id', 'title', 'slug', 'content'];
 
     public function getSlugOptions(): SlugOptions
     {
@@ -25,13 +25,20 @@ class Page extends Model
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    public function tenant(): BelongsTo { return $this->belongsTo(Tenants::class, 'tenant_id', 'id'); }
-    public function category(): BelongsTo { return $this->belongsTo(Category::class, 'category_id', 'id'); }
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenants::class, 'tenant_id', 'id');
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
 
     protected static function booted(): void
     {
-        static::saving(function (Page $page) {
-            if ($page->category_id && !$page->tenant_id) {
+        static::saving(function (Page $page): void {
+            if ($page->category_id && ! $page->tenant_id) {
                 $page->tenant_id = Category::query()->whereKey($page->category_id)->value('tenant_id');
             }
         });

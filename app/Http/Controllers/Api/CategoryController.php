@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Tenants;
 use App\Models\Category;
+use App\Models\Tenants;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -27,7 +27,7 @@ class CategoryController extends Controller
         return response()->json(['data' => $data]);
     }
 
-   public function show(Tenants $tenant, Category $category)
+    public function show(Tenants $tenant, Category $category)
     {
         if ($category->tenant_id !== $tenant->id) {
             return response()->json(['message' => 'Not found'], 404);

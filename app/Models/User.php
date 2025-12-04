@@ -1,41 +1,41 @@
 <?php
 
-// App\Models\User.php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Collection;
-
-// Filament contracts:
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
-use function Laravel\Prompts\alert;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 
-class User extends Authenticatable implements FilamentUser, HasTenants, HasDefaultTenant
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ */
+class User extends Authenticatable implements FilamentUser, HasDefaultTenant, HasTenants
 {
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
-    protected $fillable = ['name','email','password'];
-    protected $hidden = ['password','two_factor_secret','two_factor_recovery_codes','remember_token'];
+    protected $fillable = ['name', 'email', 'password'];
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $hidden = ['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
     public function initials(): string
     {
-        return Str::of($this->name)->explode(' ')->take(2)->map(fn($w) => Str::substr($w,0,1))->implode('');
+        return Str::of($this->name)->explode(' ')->take(2)->map(fn ($w) => Str::substr($w, 0, 1))->implode('');
     }
 
     public function tenants(): BelongsToMany
@@ -52,9 +52,17 @@ class User extends Authenticatable implements FilamentUser, HasTenants, HasDefau
         return true;
     }
 
-    public function canAccessTenant(\Illuminate\Database\Eloquent\Model $tenant): bool
+    /**
+     * Narrowed in phpdoc for static analysis to the Tenants model,
+     * but keep the runtime signature compatible with the HasTenants contract.
+     *
+     * @param Tenants|Model $tenant
+     */
+    public function canAccessTenant(Model $tenant): bool
     {
-        return $this->tenants()->where('tenants.id', $tenant->id)->exists();
+        /** @var Tenants $tenant */
+        // use getKey() to avoid relying on dynamic ->id on a generic Model
+        return $this->tenants()->where('tenants.id', $tenant->getKey())->exists();
     }
 
     public function getTenants(Panel $panel): array|Collection
@@ -62,10 +70,17 @@ class User extends Authenticatable implements FilamentUser, HasTenants, HasDefau
         return $this->tenants()->get();
     }
 
-    public function getDefaultTenant(Panel $panel): ?\Illuminate\Database\Eloquent\Model
+    /**
+     * Keep the return type compatible with HasDefaultTenant/HasTenants contract,
+     * but narrow the phpdoc return for static analyzers.
+     *
+     * @return Tenants|null
+     */
+    public function getDefaultTenant(Panel $panel): ?Model
     {
-        return $this->tenants()->first();
+        /** @var Tenants|null $tenant */
+        $tenant = $this->tenants()->first();
+
+        return $tenant;
     }
-
 }
-
