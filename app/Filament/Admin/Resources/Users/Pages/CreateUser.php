@@ -21,13 +21,6 @@ class CreateUser extends CreateRecord
         if (! empty($tenants)) {
             $user->tenants()->sync($tenants);
         }
-
-        // Note: API tokens are now created per tenant, not per user
-        Notification::make()
-            ->title('User Created Successfully')
-            ->body('User created. API tokens should be created per tenant.')
-            ->success()
-            ->send();
     }
 
     protected function getRedirectUrl(): string

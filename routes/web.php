@@ -28,4 +28,3 @@ Route::prefix('api/tenants/{tenant}')->middleware(['auth:sanctum'])->group(funct
     Route::get('applications', [ApplicationController::class, 'index']);
     Route::get('applications/{application}', [ApplicationController::class, 'show']);
 });
-require __DIR__.'/auth.php';

@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Users\Pages;
 
 use App\Filament\Admin\Resources\Users\UserResource;
 use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListUsers extends ListRecords
@@ -14,6 +15,7 @@ class ListUsers extends ListRecords
     {
         return [
             CreateAction::make(),
+            DeleteBulkAction::make(),
         ];
     }
 }
