@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Enums\TenantRole;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasTenants;
+use Filament\Facades\Filament;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,13 +42,20 @@ class User extends Authenticatable implements FilamentUser, HasDefaultTenant, Ha
 
     public function tenants(): BelongsToMany
     {
-        return $this->belongsToMany(Tenants::class, 'tenant_users', 'user_id', 'tenant_id')->withTimestamps();
+        return $this->belongsToMany(Tenants::class, 'tenant_users', 'user_id', 'tenant_id')
+            ->withPivot('role')
+            ->withTimestamps();
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
         if ($panel->getId() === 'admin') {
             return $this->email === 'admin@admin.com';
+        }
+
+        if ($panel->getId() === 'tenant') {
+            return $this->email === 'admin@admin.com'
+                || $this->tenants()->wherePivot('role', TenantRole::OWNER->value)->exists();
         }
 
         return true;
@@ -67,6 +76,7 @@ class User extends Authenticatable implements FilamentUser, HasDefaultTenant, Ha
 
     public function getTenants(Panel $panel): array|Collection
     {
+        // Show all tenants where the user is a member (both OWNER and MEMBER)
         return $this->tenants()->get();
     }
 
@@ -78,9 +88,36 @@ class User extends Authenticatable implements FilamentUser, HasDefaultTenant, Ha
      */
     public function getDefaultTenant(Panel $panel): ?Model
     {
+        if ($panel->getId() === 'tenant') {
+            // Prefer an owner tenant when present; otherwise fall back to any attached tenant.
+            /** @var Tenants|null $ownerTenant */
+            $ownerTenant = $this->tenants()
+                ->wherePivot('role', TenantRole::OWNER->value)
+                ->first();
+
+            if ($ownerTenant) {
+                return $ownerTenant;
+            }
+        }
+
         /** @var Tenants|null $tenant */
         $tenant = $this->tenants()->first();
 
         return $tenant;
+    }
+
+    /**
+     * Get the user's role for a given tenant (if attached).
+     */
+    public function roleForTenant(?Model $tenant): ?string
+    {
+        if (! $tenant instanceof Tenants) {
+            return null;
+        }
+
+        /** @var Tenants|null $matching */
+        $matching = $this->tenants->firstWhere('id', $tenant->getKey());
+
+        return $matching?->pivot?->role;
     }
 }

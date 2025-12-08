@@ -2,7 +2,7 @@
 
 // app/Filament/Member/Pages/EditTenantProfile.php
 
-namespace App\Filament\Member\Pages;
+namespace App\Filament\Tenant\Pages;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Tenancy\EditTenantProfile as BaseEditTenantProfile;

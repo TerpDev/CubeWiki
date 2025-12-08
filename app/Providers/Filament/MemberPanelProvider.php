@@ -19,10 +19,6 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-
-use App\Filament\Member\Pages\RegisterTenant;
-use App\Filament\Member\Pages\EditTenantProfile;
-
 class MemberPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -31,19 +27,16 @@ class MemberPanelProvider extends PanelProvider
             ->default()
             ->id('member')
             ->path('member')
-//            ->registration()
             ->login()
             ->colors(['primary' => Color::Amber])
             ->pages([DashBoard::class])
-            ->tenant(Tenants::class, ownershipRelationship: 'tenant')
+            ->tenant(Tenants::class, ownershipRelationship: 'tenants')
+            ->tenantMenu(false) // hide tenant switcher dropdown for members
 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->maxContentWidth(Width::Full)
-
-            ->tenantRegistration(RegisterTenant::class)
-            ->tenantProfile(EditTenantProfile::class)
 
             ->middleware([
                 EncryptCookies::class,

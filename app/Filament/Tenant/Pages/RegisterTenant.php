@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Filament\Member\Pages;
+namespace App\Filament\Tenant\Pages;
 
+use App\Enums\TenantRole;
 use App\Models\Tenants;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
@@ -37,7 +38,11 @@ class RegisterTenant extends BaseRegisterTenant
 
         if ($existing) {
             if (! empty($data['join_if_exists'])) {
-                auth()->user()->tenants()->attach($existing->id);
+                auth()->user()
+                    ->tenants()
+                    ->syncWithoutDetaching([
+                        $existing->id => ['role' => TenantRole::MEMBER->value],
+                    ]);
 
                 // Create token for existing tenant
                 $this->ensureTokenForTenantAndNotify($existing);
@@ -64,7 +69,11 @@ class RegisterTenant extends BaseRegisterTenant
 
         /** @var Tenants $tenant */
         $tenant = Tenants::create(['name' => $data['name']]);
-        auth()->user()->tenants()->attach($tenant->id);
+        auth()->user()
+            ->tenants()
+            ->syncWithoutDetaching([
+                $tenant->id => ['role' => TenantRole::OWNER->value],
+            ]);
 
         // Create token for new tenant
         $this->ensureTokenForTenantAndNotify($tenant);

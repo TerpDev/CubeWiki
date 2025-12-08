@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Categories\Schemas;
 
+use App\Models\Application;
+use Filament\Facades\Filament;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -12,6 +15,9 @@ class CategoriesForm
     {
         return $schema
             ->components([
+                Hidden::make('tenant_id')
+                    ->default(fn () => Filament::getTenant()?->id)
+                    ->dehydrated(),
 
                 TextInput::make('name')
                     ->label(__('Name'))
@@ -27,7 +33,24 @@ class CategoriesForm
                     ->helperText(__('Slug is automatically created.')),
                 Select::make('application_id')
                     ->label(__('Application'))
-                    ->relationship('application', 'name')
+                    ->relationship(
+                        'application',
+                        'name',
+                        fn ($query) => $query->when(
+                            Filament::getTenant(),
+                            fn ($q, $tenant) => $q->where('tenant_id', $tenant->getKey())
+                        )
+                    )
+                    ->live()
+                    ->afterStateUpdated(function ($state, callable $set): void {
+                        $tenantId = null;
+
+                        if ($state) {
+                            $tenantId = Application::find($state)?->tenant_id;
+                        }
+
+                        $set('tenant_id', $tenantId);
+                    })
                     ->searchable()
                     ->preload()
                     ->required()

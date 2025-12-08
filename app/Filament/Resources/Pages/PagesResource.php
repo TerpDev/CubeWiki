@@ -9,10 +9,12 @@ use App\Filament\Resources\Pages\Schemas\PagesForm;
 use App\Filament\Resources\Pages\Tables\PagesTable;
 use App\Models\Page;
 use BackedEnum;
+use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class PagesResource extends Resource
 {
@@ -39,7 +41,10 @@ class PagesResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = static::getModel()::count();
+        $count = static::getModel()::when(
+            Filament::getTenant(),
+            fn ($query, $tenant) => $query->where('tenant_id', $tenant->getKey())
+        )->count();
 
         return (string) $count;
     }
@@ -72,5 +77,18 @@ class PagesResource extends Resource
             'create' => CreatePages::route('/create'),
             'edit' => EditPages::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $tenant = Filament::getTenant();
+
+        if ($tenant) {
+            $query->where('tenant_id', $tenant->getKey());
+        }
+
+        return $query;
     }
 }

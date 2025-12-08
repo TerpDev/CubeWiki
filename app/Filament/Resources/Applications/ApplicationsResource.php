@@ -9,6 +9,7 @@ use App\Filament\Resources\Applications\Schemas\ApplicationsForm;
 use App\Filament\Resources\Applications\Tables\ApplicationsTable;
 use App\Models\Application;
 use BackedEnum;
+use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -40,7 +41,10 @@ class ApplicationsResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = static::getModel()::count();
+        $count = static::getModel()::when(
+            Filament::getTenant(),
+            fn ($query, $tenant) => $query->where('tenant_id', $tenant->getKey())
+        )->count();
 
         return (string) $count;
     }
@@ -70,6 +74,14 @@ class ApplicationsResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with('tenant');
+        $query = parent::getEloquentQuery()->with('tenant');
+
+        $tenant = Filament::getTenant();
+
+        if ($tenant) {
+            $query->where('tenant_id', $tenant->getKey());
+        }
+
+        return $query;
     }
 }

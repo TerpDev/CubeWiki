@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Pages\Schemas;
 
 use App\Models\Category;
+use Filament\Facades\Filament;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -16,6 +18,10 @@ class PagesForm
         return $schema
             ->columns(12)
             ->components([
+                Hidden::make('tenant_id')
+                    ->default(fn () => Filament::getTenant()?->id)
+                    ->dehydrated(),
+
                 MarkdownEditor::make('content')
 
                     ->label('Content')
@@ -46,7 +52,14 @@ class PagesForm
 
                         Select::make('category_id')
                             ->label(__('Category'))
-                            ->relationship('category', 'name')
+                            ->relationship(
+                                'category',
+                                'name',
+                                fn ($query) => $query->when(
+                                    Filament::getTenant(),
+                                    fn ($q, $tenant) => $q->where('tenant_id', $tenant->getKey())
+                                )
+                            )
                             ->searchable()
                             ->preload()
                             ->required()

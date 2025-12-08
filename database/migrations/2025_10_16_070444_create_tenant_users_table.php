@@ -11,7 +11,8 @@ return new class extends Migration
         Schema::create('tenant_users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('tenant_id')->constrained('tenants')->cascadeOnDelete();
+            $table->string('role')->default('member');
             $table->timestamps();
 
             $table->unique(['user_id', 'tenant_id']);

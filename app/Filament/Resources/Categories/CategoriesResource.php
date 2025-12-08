@@ -9,10 +9,12 @@ use App\Filament\Resources\Categories\Schemas\CategoriesForm;
 use App\Filament\Resources\Categories\Tables\CategoriesTable;
 use App\Models\Category;
 use BackedEnum;
+use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class CategoriesResource extends Resource
 {
@@ -39,7 +41,10 @@ class CategoriesResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = static::getModel()::count();
+        $count = static::getModel()::when(
+            Filament::getTenant(),
+            fn ($query, $tenant) => $query->where('tenant_id', $tenant->getKey())
+        )->count();
 
         return (string) $count;
     }
@@ -70,5 +75,18 @@ class CategoriesResource extends Resource
             'create' => CreateCategories::route('/create'),
             'edit' => EditCategories::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $tenant = Filament::getTenant();
+
+        if ($tenant) {
+            $query->where('tenant_id', $tenant->getKey());
+        }
+
+        return $query;
     }
 }

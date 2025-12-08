@@ -39,7 +39,9 @@ class Tenants extends Model
     // Explicit pivot keys: tenant_id is the pivot key on tenant_users for this model
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'tenant_users', 'tenant_id', 'user_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'tenant_users', 'tenant_id', 'user_id')
+            ->withPivot('role')
+            ->withTimestamps();
     }
 
     public function categories(): HasMany

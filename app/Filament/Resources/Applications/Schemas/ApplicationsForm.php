@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Applications\Schemas;
 
+use Filament\Facades\Filament;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -12,6 +14,10 @@ class ApplicationsForm
     {
         return $schema
             ->components([
+                Hidden::make('tenant_id')
+                    ->default(fn () => Filament::getTenant()?->id)
+                    ->dehydrated(fn () => Filament::getTenant() !== null),
+
                 TextInput::make('name')
                     ->label(__('Name'))
                     ->required()
@@ -24,13 +30,13 @@ class ApplicationsForm
                     ->label('Slug')
                     ->disabled()
                     ->helperText(__('Slug is automatically created.')),
-                //
-                //                Select::make('tenant_id')
-                //                    ->label('Tenant')
-                //                    ->relationship('tenant', 'name')
-                //                    ->searchable()
-                //                    ->preload()
-                //                    ->required(),
+                Select::make('tenant_id')
+                    ->label('Tenant')
+                    ->relationship('tenant', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required()
+                    ->visible(fn () => Filament::getTenant() === null),
             ]);
     }
 }

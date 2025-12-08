@@ -12,6 +12,7 @@ class TenantUser extends Model
     protected $fillable = [
         'tenant_id',
         'user_id',
+        'role',
     ];
 
     public function tenant(): BelongsTo
