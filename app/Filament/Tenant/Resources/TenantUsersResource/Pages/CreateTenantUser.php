@@ -22,13 +22,21 @@ class CreateTenantUser extends CreateRecord
         }
 
         $role = Arr::pull($data, 'role', TenantRole::MEMBER->value);
+        $tenantIds = Arr::wrap(Arr::pull($data, 'tenant_ids', []));
 
         /** @var \App\Models\User $user */
         $user = static::getModel()::create($data);
 
-        $user->tenants()->syncWithoutDetaching([
-            $tenant->getKey() => ['role' => $role],
-        ]);
+        // Always include the current tenant in the assignment list.
+        $tenantIds[] = $tenant->getKey();
+
+        $attachData = collect($tenantIds)
+            ->filter()
+            ->unique()
+            ->mapWithKeys(fn ($id) => [$id => ['role' => $role]])
+            ->all();
+
+        $user->tenants()->syncWithoutDetaching($attachData);
 
         return $user;
     }

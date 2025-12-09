@@ -38,7 +38,7 @@ class TenantPanelProvider extends PanelProvider
             ])
             ->searchableTenantMenu()
 
-        ->tenantRegistration(RegisterTenant::class)
+            ->tenantRegistration(RegisterTenant::class)
             ->tenantProfile(EditTenantProfile::class)
 
             ->discoverResources(in: app_path('Filament/Tenant/Resources'), for: 'App\Filament\Tenant\Resources')

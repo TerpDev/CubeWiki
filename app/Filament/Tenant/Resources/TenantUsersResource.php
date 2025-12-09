@@ -9,6 +9,7 @@ use App\Filament\Tenant\Resources\TenantUsersResource\Pages\ListTenantUsers;
 use App\Models\User;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
@@ -64,10 +65,6 @@ class TenantUsersResource extends Resource
             return false;
         }
 
-        if ($user->email === 'admin@admin.com') {
-            return true;
-        }
-
         $role = $user->roleForTenant($tenant);
 
         return $role === TenantRole::OWNER->value;
@@ -117,6 +114,17 @@ class TenantUsersResource extends Resource
 
                         $component->state($tenantRole ?? TenantRole::MEMBER->value);
                     }),
+
+                Select::make('tenant_ids')
+                    ->label('Tenants')
+                    ->helperText('Select which tenants this user should belong to.')
+                    ->multiple()
+                    ->required()
+                    ->options(fn () => auth()->user()?->tenants()->pluck('name', 'tenants.id')->all() ?? [])
+                    ->default(fn () => [Filament::getTenant()?->getKey()])
+                    ->preload()
+                    ->searchable()
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -153,23 +161,8 @@ class TenantUsersResource extends Resource
                     ->sortable(),
             ])
             ->recordActions([
-                EditAction::make()
-                    ->visible(fn () => static::currentUserCanManageTenant()),
-                Action::make('remove')
-                    ->label('Remove from tenant')
-                    ->color('danger')
-                    ->requiresConfirmation()
-                    ->icon('heroicon-o-x-circle')
-                    ->visible(fn () => static::currentUserCanManageTenant())
-                    ->action(function (User $record): void {
-                        $tenant = Filament::getTenant();
-
-                        if (! $tenant) {
-                            return;
-                        }
-
-                        $record->tenants()->detach($tenant->getKey());
-                    }),
+                EditAction::make(),
+                DeleteAction::make()
             ]);
     }
 
@@ -182,21 +175,21 @@ class TenantUsersResource extends Resource
         ];
     }
 
-    public static function getEloquentQuery(): Builder
-    {
-        $tenant = Filament::getTenant();
-
-        if (! $tenant) {
-            // Hard guard to avoid leaking users when no tenant is resolved.
-            return parent::getEloquentQuery()->whereRaw('1 = 0');
-        }
-
-        return parent::getEloquentQuery()
-            ->with([
-                'tenants' => fn ($relation) => $relation
-                    ->where('tenants.id', $tenant->getKey())
-                    ->withPivot('role'),
-            ])
-            ->whereHas('tenants', fn ($q) => $q->where('tenants.id', $tenant->getKey()));
-    }
+//    public static function getEloquentQuery(): Builder
+//    {
+//        $tenant = Filament::getTenant();
+//
+//        if (! $tenant) {
+//            // Hard guard to avoid leaking users when no tenant is resolved.
+//            return parent::getEloquentQuery()->whereRaw('1 = 0');
+//        }
+//
+//        return parent::getEloquentQuery()
+//            ->with([
+//                'tenants' => fn ($relation) => $relation
+//                    ->where('tenants.id', $tenant->getKey())
+//                    ->withPivot('role'),
+//            ])
+//            ->whereHas('tenants', fn ($q) => $q->where('tenants.id', $tenant->getKey()));
+//    }
 }

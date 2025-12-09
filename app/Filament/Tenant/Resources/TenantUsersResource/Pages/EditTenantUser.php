@@ -17,15 +17,25 @@ class EditTenantUser extends EditRecord
     {
         $tenant = Filament::getTenant();
         $role = Arr::pull($data, 'role', TenantRole::MEMBER->value);
+        $tenantIds = Arr::wrap(Arr::pull($data, 'tenant_ids', []));
 
         $record->update($data);
 
         if ($tenant) {
-            $record->tenants()->syncWithoutDetaching([
-                $tenant->getKey() => ['role' => $role],
-            ]);
+            // Always include current tenant in the assignment list.
+            $tenantIds[] = $tenant->getKey();
 
-            $record->tenants()->updateExistingPivot($tenant->getKey(), ['role' => $role]);
+            $attachData = collect($tenantIds)
+                ->filter()
+                ->unique()
+                ->mapWithKeys(fn ($id) => [$id => ['role' => $role]])
+                ->all();
+
+            $record->tenants()->syncWithoutDetaching($attachData);
+
+            foreach (array_keys($attachData) as $id) {
+                $record->tenants()->updateExistingPivot($id, ['role' => $role]);
+            }
         }
 
         return $record;
