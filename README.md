@@ -1,190 +1,114 @@
-# Cube Wiki API – Multitenant Knowledge Management Platform
-Welcome to Cube Wiki, a multitenant knowledge-management platform built with Filament.
-Cube Wiki offers a structured way to manage documentation through Applications, Categories, and Pages.
+<div align="center">
 
-[//]: # (## Showcase)
+# 🧊 Cube Wiki
 
-[//]: # (### User)
+### Multitenant Knowledge Management Platform
 
-[//]: # (![User Dashboard]&#40;Docs/images/dashboarduser.png&#41;)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
+[![Laravel](https://img.shields.io/badge/Laravel-12.0-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![Filament](https://img.shields.io/badge/Filament-4.0-FDAE4B?style=for-the-badge)](https://filamentphp.com)
+[![REST API](https://img.shields.io/badge/REST-API-4F46E5?style=for-the-badge)](https://restfulapi.net)
 
-[//]: # (![User create tenant]&#40;Docs/images/createtenant.png&#41;)
+*Organize your documentation with Applications → Categories → Pages*
 
-[//]: # (![User application]&#40;Docs/images/appuser.png&#41;)
 
-[//]: # (![User application]&#40;Docs/images/catuser.png&#41;)
+**Want to integrate Cube Wiki in your own Filament project?**  
+👉 [Check out the CubeWikiPackage](https://github.com/TerpDev/CubeWikiPackage)
 
-[//]: # (![User application]&#40;Docs/images/pageuser.png&#41;)
+</div>
 
+---
 ## Introduction
-Cube Wiki is a multitenant knowledge-management platform built with Filament.
-The system has two distinct roles: **Owner**, and **Member**. Users with the **Owner** role have full control over their tenant,
-including creating users. Users with the **Member** role
-can create and manage applications, categories, and pages. Every page is written in Markdown and stored in the Cube Wiki API.
+
+Cube Wiki is a multitenant knowledge-management platform built with Filament.   
+The system allows you to create and manage structured documentation within your own tenant(s).
+
+Each tenant can contain multiple **Applications**, each application can have multiple **Categories**,
+and each category contains **Pages** written in Markdown.
+
+### User Roles
+
+- **Owner** - Full control over the tenant, can manage users and all content
+- **Member** - Can create and manage applications, categories, and pages
 
 ## Features
-### Multitenancy
-- Each user can belong to one or multiple tenants.
-- All data is fully isolated per tenant.
-- Tenants can create new tenants or switch between existing one if you joined them.
-- Users are put on selected tenants.
-### Tenant features
-- Create tenants - each tenant receives its own API token with Sanctum.
-- Create and manage users.
-- Assign users to one or multiple tenants.
-### Users features
-- Create and edit applications, categories and pages inside their tenants.
-- Write pages using the build in Markdown editor.
-- Switch between tenants if their in more than one.
 
-## Applications, Categories and Pages
-### Applications
-- Create applications with a name — slugs are generated automatically.
-- Applications act as the top level container for documentation
-```php
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
+### 🏢 Multitenancy
+- Each user can belong to one or multiple tenants
+- All data is fully isolated per tenant
+- Easy switching between tenants
+- Create your own tenant or join existing ones
 
-class Application extends Model
-{
-    use HasSlug;
-    //slug options
+### 📁 Structured Documentation
+- **Applications** - Top-level containers for your documentation
+- **Categories** - Organize content within applications
+- **Pages** - Write content in Markdown with a built-in editor
 
-    protected $fillable = ['tenant_id','name','slug'];
+### ✍️ Markdown Support
+- Full Markdown editor for writing pages
+- Support for tables, code blocks, images, and more
+- Content is automatically converted to HTML via API
 
-    public function tenant(): BelongsTo
-    {
-        return $this->belongsTo(Tenants::class, 'tenant_id', 'id');
-    }
-    public function categories(): HasMany
-    {
-        return $this->hasMany(Category::class);
-    }
-}
-```
-### Categories
-- Create categories with an auto-generated slug.
-- Each category must be linked to an application (selectable via dropdown).
-```php
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
+### 🔗 Automatic Slug Generation
+- Clean, SEO-friendly URLs
+- Slugs are generated automatically from names
+- Slugs remain stable even when you rename content (links won't break)
 
-class Category extends Model
-{
-    use HasSlug;
-    //slug options
+### 🔌 REST API
+- Each tenant gets a unique API token
+- Access your documentation programmatically
+- Perfect for integrating with other applications
+- Use the [CubeWikiPackage](https://github.com/TerpDev/CubeWikiPackage) for seamless Filament integration
 
-    protected $fillable = ['tenant_id', 'application_id', 'name', 'slug'];
+## Getting Started
 
-    public function tenant(): BelongsTo
-    {
-        return $this->belongsTo(Tenants::class, 'tenant_id', 'id');
-    }
+### Creating Your Tenant
 
-    public function application(): BelongsTo
-    {
-        return $this->belongsTo(Application::class, 'application_id', 'id');
-    }
+1. Register for an account or log in
+2. Create your first tenant from the dashboard
+3. You'll automatically be assigned as the **Owner** of your new tenant
 
-    public function pages(): HasMany
-    {
-        return $this->hasMany(Page::class);
-    }
+### Managing Users
 
-}
+As a tenant **Owner**, you can:
+- Invite users to your tenant
+- Assign them the **Owner** or **Member** role
+- Manage user permissions
 
-```
-### Pages
-- Create pages with auto-generated slugs.
-- Each page must be linked to a category
-- Markdown editor for writing content.
-- Markdown is stored as is and served via the API.
-```php
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
+### Creating Documentation
 
-class Page extends Model
-{
-    use HasSlug;
-    //slug options
+#### 1. Create an Application
 
-    protected $table = 'pages';
+Applications are the top-level containers for your documentation.
 
-    protected $fillable = ['tenant_id','category_id','title','slug','content'];
+- Navigate to **Applications**
+- Click **New Application**
+- Enter a name (slug is generated automatically)
+- Save
 
+#### 2. Create Categories
 
-    public function tenant(): BelongsTo 
-    { 
-        return $this->belongsTo(Tenants::class, 'tenant_id', 'id'); 
-    }
+Categories help organize your content within an application.
 
-    public function category(): BelongsTo 
-    { 
-        return $this->belongsTo(Category::class, 'category_id', 'id'); 
-    }
+- Navigate to **Categories**
+- Click **New Category**
+- Enter a name and select the parent application
+- Save
 
-    protected static function booted(): void
-    {
-        static::saving(function (Page $page) {
-            if ($page->category_id && !$page->tenant_id) {
-                $page->tenant_id = Category::query()->whereKey($page->category_id)->value('tenant_id');
-            }
-        });
-    }
-}
+#### 3. Create Pages
 
-```
-## Slug generation
-Slug is automatically generated from the name of the application, category or page with
-Spatie Sluggable package. When you create an application, category or page the slug will stay
-So if you edit the name the slug will not change. So the links to the pages will not break.
+Pages contain your actual documentation content.
 
-Slug is used in the API for a cleaner URL structure.
+- Navigate to **Pages**
+- Click **New Page**
+- Enter a title and select the parent category
+- Write your content using the Markdown editor
+- Save
 
-#### Example of slug generation in a Model:
-```php
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
+## Structure Example
 
-use HasSlug;
+Here's how your documentation might be structured in JSON format:
 
-public function getSlugOptions(): SlugOptions    {
-     return SlugOptions::create()
-         ->generateSlugsFrom('name')
-         ->saveSlugsTo('slug')
-         ->slugsShouldBeNoLongerThan(64)
-         ->doNotGenerateSlugsOnUpdate();
-     }
-```
-## Markdown Pages
-### Tables support
-You can use regular Markdown syntax to create tables in your pages.
-```markdown
-| Syntax     |             Description (center)              |     Foo (right) | Bar (left)      |
-|------------|:---------------------------------------------:|----------------:|:----------------|
-| Header     |                     Title                     |       Something | Else            |
-| Paragraphs |  First paragraph. <br><br> Second paragraph.  | First paragraph | First paragraph |
-```
-![Table Example](Docs/images/table.png)
-
-
-
-## API overview
-Each tenant receives one API token, generated by admin.
-This token provides access to all data belonging to that tenant.
-The API returns the complete hierarchical structure:
-
-Tenant → Applications → Categories → Pages
-#### Example API responce
 ```json
 {
   "tenant": {
@@ -221,50 +145,182 @@ Tenant → Applications → Categories → Pages
   ]
 }
 ```
-The content_html might look messy, but it is just the HTML generated from the Markdown content.
-In the markdown content it is just this from the page:
-#### Example of page content in Markdown:
+
+## Applications, Categories and Pages
+
+### Applications
+- Create applications with a name — slugs are generated automatically
+- Applications act as the top level container for documentation
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
+
+class Application extends Model
+{
+    use HasSlug;
+    //slug options
+
+    protected $fillable = ['tenant_id','name','slug'];
+
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenants::class, 'tenant_id', 'id');
+    }
+    
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
+}
+```
+
+### Categories
+- Create categories with an auto-generated slug
+- Each category must be linked to an application (selectable via dropdown)
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
+
+class Category extends Model
+{
+    use HasSlug;
+    //slug options
+
+    protected $fillable = ['tenant_id', 'application_id', 'name', 'slug'];
+
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenants:: class, 'tenant_id', 'id');
+    }
+
+    public function application(): BelongsTo
+    {
+        return $this->belongsTo(Application::class, 'application_id', 'id');
+    }
+
+    public function pages(): HasMany
+    {
+        return $this->hasMany(Page::class);
+    }
+}
+```
+
+### Pages
+- Create pages with auto-generated slugs
+- Each page must be linked to a category
+- Markdown editor for writing content
+- Markdown is stored as is and served via the API
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
+
+class Page extends Model
+{
+    use HasSlug;
+    //slug options
+
+    protected $table = 'pages';
+
+    protected $fillable = ['tenant_id','category_id','title','slug','content'];
+
+    public function tenant(): BelongsTo 
+    { 
+        return $this->belongsTo(Tenants::class, 'tenant_id', 'id'); 
+    }
+
+    public function category(): BelongsTo 
+    { 
+        return $this->belongsTo(Category:: class, 'category_id', 'id'); 
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (Page $page) {
+            if ($page->category_id && !$page->tenant_id) {
+                $page->tenant_id = Category::query()->whereKey($page->category_id)->value('tenant_id');
+            }
+        });
+    }
+}
+```
+
+## Slug Generation
+
+Slugs are automatically generated from the name of your applications, categories, and pages using the Spatie Sluggable package.
+
+**Important:** When you edit the name of an item, the slug stays the same. This ensures that links to your pages won't break.
+
+Example:
+- Create page with title:  "Getting Started Guide"
+- Generated slug: `getting-started-guide`
+- Change title to: "Introduction Guide"
+- Slug remains: `getting-started-guide` ✅
+
+Slugs are used in the API for a cleaner URL structure.
+
+### Example of slug generation in a Model:
+
+```php
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
+
+use HasSlug;
+
+public function getSlugOptions(): SlugOptions
+{
+    return SlugOptions:: create()
+        ->generateSlugsFrom('name')
+        ->saveSlugsTo('slug')
+        ->slugsShouldBeNoLongerThan(64)
+        ->doNotGenerateSlugsOnUpdate();
+}
+```
+
+## Markdown Features
+
+### Tables
+
+You can create tables using standard Markdown syntax:
+
 ```markdown
-# What is a slug?
-this is a slug
-```
-## Package integration
-Cube Wiki can be easily integrated into other Laravel/Filament projects
-using the companion package
-
-[CubeWikiPackage](https://github.com/TerpDev/CubeWikiPackage)
-
-You can see the README.md of that package for more information about the integration.
-## Summary
-Cube Wiki is flexible and scalable multitenant wiki System with:
-- Applications → Categories → Pages structure
-- Markdown support for the pages
-- API access per tenant
-- Automatic slug generation
-
-## Testing
-
-```bash
-composer test
+| Syntax     |             Description (center)              |     Foo (right) | Bar (left)      |
+|------------|:---------------------------------------------:|----------------:|:----------------|
+| Header     |                     Title                     |       Something | Else            |
+| Paragraphs |  First paragraph. <br><br> Second paragraph.  | First paragraph | First paragraph |
 ```
 
-## Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+## Integration with Other Projects
 
-## Contributing
+Want to use your Cube Wiki documentation in your own Filament application?
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+Use the **CubeWikiPackage** to seamlessly integrate Cube Wiki into your project:
 
-## Security Vulnerabilities
+👉 [CubeWikiPackage on GitHub](https://github.com/TerpDev/CubeWikiPackage)
 
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+The package allows you to:
+- Display your Cube Wiki content in your own Filament panels
+- Navigate through applications, categories, and pages
+- Render Markdown content as HTML
+- Use your tenant's API token for authentication
 
 ## Credits
 
-- Spatie - Sluggable package is used for slug generation
-  of [Spatie's Sluggable ](https://github.com/spatie/laravel-sluggable)
+- [Spatie's Sluggable](https://github.com/spatie/laravel-sluggable) - Automatic slug generation
+- [Filament](https://filamentphp.com/) - Admin panel framework
+- [Laravel](https://laravel.com/) - PHP framework
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information. 

@@ -117,14 +117,29 @@ class TenantUsersResource extends Resource
 
                 Select::make('tenant_ids')
                     ->label('Tenants')
-                    ->helperText('Select which tenants this user should belong to.')
+                    ->helperText('Select which tenants this user should belong to. A user must belong to at least 1 tenant.')
                     ->multiple()
                     ->required()
+                    ->minItems(1)
                     ->options(fn () => auth()->user()?->tenants()->pluck('name', 'tenants.id')->all() ?? [])
                     ->default(fn () => [Filament::getTenant()?->getKey()])
                     ->preload()
                     ->searchable()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->afterStateHydrated(function (Select $component, ?User $record): void {
+                        if (! $record) {
+                            return;
+                        }
+
+                        // Load all tenant IDs this user belongs to (that the current user can see)
+                        $currentUserTenantIds = auth()->user()?->tenants()->pluck('tenants.id')->all() ?? [];
+                        $userTenantIds = $record->tenants()
+                            ->whereIn('tenants.id', $currentUserTenantIds)
+                            ->pluck('tenants.id')
+                            ->all();
+
+                        $component->state($userTenantIds);
+                    }),
             ]);
     }
 
