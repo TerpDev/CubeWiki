@@ -49,9 +49,6 @@ class TenantPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->navigationGroups([
-                // Add navigation groups here if needed
-            ])
             ->discoverWidgets(in: app_path('Filament/Tenant/Widgets'), for: 'App\Filament\Tenant\Widgets')
             ->widgets([
                 AccountWidget::class,
