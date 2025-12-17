@@ -5,12 +5,12 @@ namespace App\Providers\Filament;
 use App\Filament\Tenant\Pages\EditTenantProfile;
 use App\Filament\Tenant\Pages\RegisterTenant;
 use App\Filament\Tenant\Pages\Register;
+use App\Filament\Tenant\Pages\Dashboard;
 use App\Models\Tenants;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -48,6 +48,9 @@ class TenantPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Tenant/Pages'), for: 'App\Filament\Tenant\Pages')
             ->pages([
                 Dashboard::class,
+            ])
+            ->navigationGroups([
+                // Add navigation groups here if needed
             ])
             ->discoverWidgets(in: app_path('Filament/Tenant/Widgets'), for: 'App\Filament\Tenant\Widgets')
             ->widgets([

@@ -6,7 +6,7 @@ use App\Models\Tenants;
 use CraftForge\FilamentLanguageSwitcher\FilamentLanguageSwitcherPlugin;
 use Filament\Panel;
 use Filament\PanelProvider;
-use App\Filament\Pages\DashBoard;
+use App\Filament\Tenant\Pages\Dashboard;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
 use Filament\Http\Middleware\Authenticate;
@@ -29,7 +29,6 @@ class MemberPanelProvider extends PanelProvider
             ->path('member')
             ->login()
             ->colors(['primary' => Color::Amber])
-            ->pages([DashBoard::class])
             ->tenant(Tenants::class, ownershipRelationship: 'tenants')
             ->tenantMenu(true) // hide tenant switcher dropdown for members
             ->brandLogo(asset('images/cubezwart.png'))
