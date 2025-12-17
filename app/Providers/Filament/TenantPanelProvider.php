@@ -37,7 +37,9 @@ class TenantPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->searchableTenantMenu()
-
+            ->brandLogo(asset('images/cubezwart.png'))
+            ->darkModeBrandLogo(asset('images/cubewit.png'))
+            ->brandLogoHeight('2rem')
             ->tenantRegistration(RegisterTenant::class)
             ->tenantProfile(EditTenantProfile::class)
 

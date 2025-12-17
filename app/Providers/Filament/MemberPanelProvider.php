@@ -32,6 +32,9 @@ class MemberPanelProvider extends PanelProvider
             ->pages([DashBoard::class])
             ->tenant(Tenants::class, ownershipRelationship: 'tenants')
             ->tenantMenu(true) // hide tenant switcher dropdown for members
+            ->brandLogo(asset('images/cubezwart.png'))
+            ->darkModeBrandLogo(asset('images/cubewit.png'))
+            ->brandLogoHeight('2rem')
 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
