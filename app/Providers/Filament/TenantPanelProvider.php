@@ -7,6 +7,8 @@ use App\Filament\Tenant\Pages\RegisterTenant;
 use App\Filament\Tenant\Pages\Register;
 use App\Filament\Tenant\Pages\Dashboard;
 use App\Models\Tenants;
+use Filament\Facades\Filament;
+use Filament\Navigation\MenuItem;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -42,6 +44,13 @@ class TenantPanelProvider extends PanelProvider
             ->brandLogoHeight('2rem')
             ->tenantRegistration(RegisterTenant::class)
             ->tenantProfile(EditTenantProfile::class)
+
+            ->userMenuItems([
+                'member-panel' => MenuItem::make()
+                    ->label('Member Panel')
+                    ->icon('heroicon-o-user-group')
+                    ->url(fn (): string => route('filament.member.pages.dash-board', ['tenant' => Filament::getTenant()?->slug]))
+            ])
 
             ->discoverResources(in: app_path('Filament/Tenant/Resources'), for: 'App\Filament\Tenant\Resources')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')

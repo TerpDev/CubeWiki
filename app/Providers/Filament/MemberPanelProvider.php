@@ -2,11 +2,13 @@
 
 namespace App\Providers\Filament;
 
+use App\Enums\TenantRole;
 use App\Models\Tenants;
 use CraftForge\FilamentLanguageSwitcher\FilamentLanguageSwitcherPlugin;
+use Filament\Facades\Filament;
+use Filament\Navigation\MenuItem;
 use Filament\Panel;
 use Filament\PanelProvider;
-use App\Filament\Tenant\Pages\Dashboard;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
 use Filament\Http\Middleware\Authenticate;
@@ -34,6 +36,14 @@ class MemberPanelProvider extends PanelProvider
             ->brandLogo(asset('images/cubezwart.png'))
             ->darkModeBrandLogo(asset('images/cubewit.png'))
             ->brandLogoHeight('2rem')
+
+            ->userMenuItems([
+                'tenant-panel' => MenuItem::make()
+                    ->label('Tenant Panel')
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->url(fn (): string => route('filament.tenant.pages.dashboard', ['tenant' => Filament::getTenant()?->slug]))
+                    ->visible(fn (): bool => auth()->user()?->roleForTenant(Filament::getTenant()) === TenantRole::OWNER->value)
+            ])
 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

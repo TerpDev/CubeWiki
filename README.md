@@ -28,33 +28,33 @@ and each category contains **Pages** written in Markdown.
 
 ### User Roles
 
-- **Owner** - Full control over the tenant, can manage users and all content
+- **Owner** - Full control over the tenant, can manage users and all content also 
+Owner can switch easy from member panel to tenant panel and back.
 - **Member** - Can create and manage applications, categories, and pages
 
 ## Features
 
-### 🏢 Multitenancy
+### Multitenancy
 - Each user can belong to one or multiple tenants
 - All data is fully isolated per tenant
 - Easy switching between tenants
 - Create your own tenant or join existing ones
 
-### 📁 Structured Documentation
+### Structured Documentation
 - **Applications** - Top-level containers for your documentation
 - **Categories** - Organize content within applications
 - **Pages** - Write content in Markdown with a built-in editor
 
-### ✍️ Markdown Support
+### Markdown Support
 - Full Markdown editor for writing pages
 - Support for tables, code blocks, images, and more
 - Content is automatically converted to HTML via API
 
-### 🔗 Automatic Slug Generation
-- Clean, SEO-friendly URLs
+### Automatic Slug Generation
 - Slugs are generated automatically from names
 - Slugs remain stable even when you rename content (links won't break)
 
-### 🔌 REST API
+### REST API
 - Each tenant gets a unique API token
 - Access your documentation programmatically
 - Perfect for integrating with other applications
@@ -111,38 +111,38 @@ Here's how your documentation might be structured in JSON format:
 
 ```json
 {
-  "tenant": {
-    "id": 1,
-    "name": "Cube",
-    "slug": "cube"
-  },
-  "applications": [
-    {
-      "id": 10,
-      "tenant_id": 1,
-      "name": "Hint",
-      "slug": "hint",
-      "categories": [
+    "tenant": {
+        "id": 1,
+        "name": "Cube",
+        "slug": "cube"
+    },
+    "applications": [
         {
-          "id": 9,
-          "tenant_id": 1,
-          "application_id": 10,
-          "name": "HintActions",
-          "slug": "hintactions",
-          "pages": [
-            {
-              "id": 9,
-              "category_id": 9,
-              "tenant_id": 1,
-              "title": "Slug",
-              "slug": "slug",
-              "content_html": "\u003Ch1\u003EWhat is a slug?\u003C/h1\u003E\n\u003Cp\u003EThis is a slug\u003C/p\u003E\n"
-            }
-          ]
+            "id": 10,
+            "tenant_id": 1,
+            "name": "Hint",
+            "slug": "hint",
+            "categories": [
+                {
+                    "id": 9,
+                    "tenant_id": 1,
+                    "application_id": 10,
+                    "name": "HintActions",
+                    "slug": "hintactions",
+                    "pages": [
+                        {
+                            "id": 9,
+                            "category_id": 9,
+                            "tenant_id": 1,
+                            "title": "Slug",
+                            "slug": "slug",
+                            "content_html": "\u003Ch1\u003EWhat is a slug?\u003C/h1\u003E\n\u003Cp\u003EThis is a slug\u003C/p\u003E\n"
+                        }
+                    ]
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }
 ```
 
